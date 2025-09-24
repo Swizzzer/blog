@@ -1,11 +1,13 @@
 ---
-import { Button, Collapse, Spoiler, Timeline } from 'astro-pure/user'
+import { Aside, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
 import Substats from '@/components/about/Substats.astro'
 
 const headings = [
   { depth: 2, slug: 'social-networks', text: 'Social Networks' },
-  { depth: 2, slug: 'awards', text: 'Awards' }
+  { depth: 2, slug: 'awards', text: 'Awards' },
+  { depth: 2, slug: 'GPG Key', text: 'My GPG Key' },
+  { depth: 2, slug: 'Coding time', text: 'Coding time' }
 ]
 ---
 
@@ -86,5 +88,11 @@ const headings = [
       }
     ]}
   />
+  <h2 id='GPG Key'>My GPG Key</h2>
+  You can download my <a href='https://github.com/swizzzer.gpg'>GPG key</a> to verify my signed messages.
+
+  <h2 id='Coding time'>Coding time</h2>
+  <object type="image/svg+xml" data="https://wakatime.com/share/@Wercilim/17385e4c-c7ed-4b63-b85d-c0876e6ed93c.svg"></object>
+
 
 </PageLayout>
