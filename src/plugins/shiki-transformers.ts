@@ -141,3 +141,84 @@ export const addCopyButton = (timeout?: number): ShikiTransformer => {
     }
   }
 }
+
+// Add a collapse button to the code block
+export const addCollapseButton = (): ShikiTransformer => {
+  return {
+    name: 'shiki-transformer-collapse-button',
+    pre(node) {
+      const button = h(
+        'button',
+        {
+          class: 'collapse text-muted-foreground p-1 box-content border rounded bg-primary-foreground',
+          onclick: `
+            const codeBlock = this.closest('.astro-code');
+            const pre = codeBlock.querySelector('pre');
+            const code = pre.querySelector('code');
+            const isCollapsed = codeBlock.classList.contains('collapsed');
+            
+            if (isCollapsed) {
+              codeBlock.classList.remove('collapsed');
+              pre.style.maxHeight = '';
+              pre.style.overflow = '';
+              this.querySelector('.expand').classList.add('hidden');
+              this.querySelector('.collapse-icon').classList.remove('hidden');
+            } else {
+              codeBlock.classList.add('collapsed');
+              
+              // 动态计算前2行的高度
+              const lines = code.querySelectorAll('.line');
+              if (lines.length >= 2) {
+                const firstLineHeight = lines[0].getBoundingClientRect().height;
+                const secondLineHeight = lines[1].getBoundingClientRect().height;
+                const preStyles = window.getComputedStyle(pre);
+                const paddingTop = parseFloat(preStyles.paddingTop);
+                const paddingBottom = parseFloat(preStyles.paddingBottom);
+                
+                const collapsedHeight = firstLineHeight + secondLineHeight + paddingTop + paddingBottom + 'px';
+                pre.style.maxHeight = collapsedHeight;
+              } else {
+                // 回退到固定高度
+                pre.style.maxHeight = 'calc(1.5rem * 2 + 1.7rem)';
+              }
+              
+              pre.style.overflow = 'hidden';
+              this.querySelector('.expand').classList.remove('hidden');
+              this.querySelector('.collapse-icon').classList.add('hidden');
+            }
+          `
+        },
+        [
+          h('div', { class: 'collapse-icon' }, [
+            h(
+              'svg',
+              {
+                class: 'size-5'
+              },
+              [
+                h('use', {
+                  href: '/icons/code.svg#mingcute-up-line'
+                })
+              ]
+            )
+          ]),
+          h('div', { class: 'expand hidden' }, [
+            h(
+              'svg',
+              {
+                class: 'size-5'
+              },
+              [
+                h('use', {
+                  href: '/icons/code.svg#mingcute-down-line'
+                })
+              ]
+            )
+          ])
+        ]
+      )
+
+      node.children.push(button)
+    }
+  }
+}

@@ -13,6 +13,7 @@ import remarkMath from 'remark-math'
 import rehypeAutolinkHeadings from './src/plugins/rehype-auto-link-headings.ts'
 // Shiki
 import {
+  addCollapseButton,
   addCopyButton,
   addLanguage,
   addTitle,
@@ -97,7 +98,8 @@ export default defineConfig({
         updateStyle(),
         addTitle(),
         addLanguage(),
-        addCopyButton(2000)
+        addCopyButton(2000),
+        addCollapseButton()
       ]
     }
   },

@@ -165,8 +165,44 @@ span.katex-display {
       }
     }
   }
+
+  & button.collapse {
+    transition: opacity 0.3s;
+    opacity: 0;
+    position: absolute;
+    top: 0.75rem;
+    right: 3rem;
+    user-select: none;
+  }
+
+  /* 为所有 pre 添加过渡动画 */
+  & pre {
+    transition: max-height 0.3s ease-in-out;
+  }
+
+  /* 折叠状态样式 */
+  &.collapsed {
+    & pre {
+      position: relative;
+    }
+
+    & pre::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1.5rem;
+      background: linear-gradient(transparent, hsl(var(--muted) / var(--un-bg-opacity, 1)));
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
   &:hover {
     button.copy {
+      opacity: 1;
+    }
+    button.collapse {
       opacity: 1;
     }
     .language {
