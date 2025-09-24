@@ -13,17 +13,6 @@ export const IntegrationConfigSchema = () =>
      */
     pagefind: z.boolean().optional(),
 
-    /**
-     * Add a random quote to the footer (default on homepage footer).
-     * The quote will be fetched from the specified server and the target will be replaced with the quote.
-     */
-    quote: z.object({
-      /** The server to fetch the quote from. */
-      server: z.string(),
-      /** target: string, but (data: unknown) => string */
-      target: z.string()
-    }),
-
     /** UnoCSS typography */
     typography: z.object({
       /** The class to apply to the typography. */
