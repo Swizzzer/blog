@@ -137,6 +137,7 @@ span.katex-display {
     top: 0.75rem;
     right: 0.75rem;
     user-select: none;
+    z-index: 3; /* 确保复制按钮在最上层 */
 
     & .success::before {
       content: 'Copied!';
@@ -154,6 +155,8 @@ span.katex-display {
       color: hsl(var(--muted-foreground) / var(--un-text-opacity, 1));
       background-color: hsl(var(--primary-foreground) / var(--un-bg-opacity, 1));
       border: 1px solid hsl(var(--border) / var(--un-border-opacity, 1));
+      z-index: 4; /* 提示框层级更高 */
+      white-space: nowrap;
     }
     &.copied {
       & .success {
@@ -164,6 +167,11 @@ span.katex-display {
         display: none;
       }
     }
+
+    /* 当复制按钮激活时，暂时隐藏折叠按钮 */
+    &.copied ~ .collapse {
+      opacity: 0 !important;
+    }
   }
 
   & button.collapse {
@@ -171,8 +179,9 @@ span.katex-display {
     opacity: 0;
     position: absolute;
     top: 0.75rem;
-    right: 3rem;
+    right: 3.25rem; /* 增加一些距离，避免与复制按钮太近 */
     user-select: none;
+    z-index: 2; /* 折叠按钮层级较低 */
   }
 
   /* 为所有 pre 添加过渡动画 */
