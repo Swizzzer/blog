@@ -59,7 +59,7 @@ for i in range(0,30):
 
 回到这题，首先我们得想办法恢复出p，想恢复p就得恢复出那个极小多项式。我看不少师傅都是手动造格去做的，that's good，但是不符合我们对速度的追求。
 
-其实Sage提供[一个函数](https://doc.sagemath.org/html/en/reference/rings_standard/sage/arith/misc.html#sage.arith.misc.algdep)可以完美解决这类问题。||能自动造格为什么要手动造呢||
+其实Sage提供[一个函数](https://doc.sagemath.org/html/en/reference/rings_standard/sage/arith/misc.html#sage.arith.misc.algdep)可以完美解决这类问题。~~能自动造格为什么要手动造呢~~
 
 ![自动化LLL](assets/image-55.png)
 
@@ -118,7 +118,7 @@ alphas = [v_closest[i] for i in range(len(v_closest))]
 print(long_to_bytes((inverse(t_i[0], p) * alphas[0]) % p))
 ```
 
-||可惜开始看题的时候有点晚，不然感觉有机会一血xD||
+可惜开始看题的时候有点晚，不然感觉有机会一血xD
 
 ## 不知名比赛 - RSA101
 
@@ -452,7 +452,7 @@ while True:
 
 > 也就是说把hamming weight给了我们
 
-很容易发现如果输入的x大于10000，那么p是不会重新生成的。||这里就非常可疑，很容易让人想到CRT|| 问题在于，我们获得hamming weight有什么用呢？
+很容易发现如果输入的x大于10000，那么p是不会重新生成的。这里就非常可疑，很容易让人想到CRT。问题在于，我们获得hamming weight有什么用呢？
 
 关键在于这里的Oracle。还是考虑p不变的情况，因为是无限次的Oracle，所以我们可以选取适当的x使得下一轮Oracle中追加的 'a' 的个数比这一轮追加的多1。记`S = FLAG + 'a' * k`，`G_k = bytes_to_long(S)`，`R_k = G_k mod p`，`Q_k = ⌊G_k / p⌋`，那么从 k 变到 k+1 的时候：
 
