@@ -2,42 +2,79 @@
   "friends": [
     {
       "id_name": "cf-links",
-      "desc": "Common links included in circle friends",
+      "desc": "Common links",
       "link_list": [
         {
-          "name": "Arthals' ink",
-          "intro": "所见高山远木，阔云流风；所幸岁月盈余，了无拘束",
-          "link": "https://arthals.ink/",
-          "avatar": "https://cdn.arthals.ink/Arthals.png"
+          "name": "LOv3",
+          "intro": "Agent Infra",
+          "link": "https://lov2.netlify.app/",
+          "avatar": "https://avatars.githubusercontent.com/u/30841158?v=4"
         },
         {
-          "name": "CWorld Site",
-          "intro": "求知若愚，虚怀若谷",
-          "link": "https://cworld0.com/",
-          "avatar": "https://cravatar.cn/avatar/1ffe42aa45a6b1444a786b1f32dfa8aa?s=200"
-        }
-      ]
-    },
-    {
-      "id_name": "inactive-links",
-      "desc": "Inactive or rule-breaking friends",
-      "link_list": []
-    },
-    {
-      "id_name": "special-links",
-      "desc": "Other special links",
-      "link_list": [
-        {
-          "name": "虫洞",
-          "intro": "随机前往十年之约的成员博客",
-          "link": "https://www.foreverblog.cn/go.html",
-          "avatar": "/images/wormhole.png"
+          "name": "LiBr",
+          "intro": "井底之蛙不识海，却知晓天空之蓝。",
+          "link": "https://nvme0n1p.dev",
+          "avatar": "https://gravatar.com/avatar/27c24bc48abf694631bb15836511d135?s=400"
         },
         {
-          "name": "开往",
-          "intro": "随机前往开往的成员博客",
-          "link": "https://www.travellings.cn/go.html",
-          "avatar": "https://www.travellings.cn/assets/travelling.png"
+          "name": "DexterJie",
+          "intro": "NISA/XMCVE/Crypto",
+          "link": "https://dexterjie.github.io/",
+          "avatar": "https://dexterjie.github.io/images/0.jpg"
+        },
+        {
+          "name": "Triode",
+          "intro": "SZU Aurora/SU/Crypto",
+          "link": "https://triodelzx.github.io/",
+          "avatar": "https://triodelzx.github.io/img/512.png"
+        },
+        {
+          "name": "m1n9",
+          "intro": "HnuSec/Nepnep/Crypto",
+          "link": "https://mi1n9.github.io/",
+          "avatar": "https://ooo.0x0.ooo/2025/08/11/OfRo5L.jpg"
+        },
+        {
+          "name": "Morgenro",
+          "intro": "",
+          "link": "https://morgenro.github.io/",
+          "avatar": "https://morgenro.github.io/img/AiHaibara1.jpg"
+        },
+        {
+          "name": "Keyboard",
+          "intro": "🫡 My Captain",
+          "link": "https://muzihit.github.io",
+          "avatar": "https://muzihit.github.io/img/head.jpg"
+        },
+        {
+          "name": "cheng_xing",
+          "intro": "✨奇迹的始发站",
+          "link": "https://sakuraraindrop.github.io/",
+          "avatar": "https://sakuraraindrop.github.io/img/ltx-icon.jpg"
+        },
+        {
+          "name": "Doctxing",
+          "intro": "Dr. Xing",
+          "link": "https://let.doctxing.win",
+          "avatar": "https://let.doctxing.win/image/avatar.webp"
+        },
+        {
+          "name": "adwa",
+          "intro": "世界上最帅的男人（自称）",
+          "link": "https://languag3.github.io/",
+          "avatar": "https://languag3.github.io/images/avatar.jpg"
+        },
+        {
+          "name": "oldkingOK",
+          "intro": "the king of Reverse",
+          "link": "https://oldkingok.cc",
+          "avatar": "https://r2proxy.oldkingok.cc/icon.png"
+        },
+        {
+          "name": "Shin",
+          "intro": "Never forget, there will be echoes",
+          "link": "https://shinichicun.top/",
+          "avatar": "https://shinichicun.top/avatar.png"
         }
       ]
     }

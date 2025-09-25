@@ -2,6 +2,7 @@
 import { Aside, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
 import Substats from '@/components/about/Substats.astro'
+import { GithubCard } from 'astro-pure/advanced'
 
 const headings = [
   { depth: 2, slug: 'social-networks', text: 'Social Networks' },
@@ -18,6 +19,11 @@ const headings = [
   <p>
     My academic and extracurricular interests include algebra, combinatorics, and cryptography, with a strong passion for problem solving in competitive security challenges.
   </p>
+  <p>
+    I also create challenges for some CTF events, you can find them here👇
+  </p>
+  <GithubCard repo='Swizzzer/my-CTF-Challenges' />
+
 
   {/* social-networks */}
   <h2 id='social-networks'>Social Networks</h2>
@@ -36,7 +42,6 @@ const headings = [
       {
         platform: 'Steam',
         icon: 'steam',
-        color: '#171a21',
         link: 'https://steamcommunity.com/profiles/76561199221873292/',
         text: 'games',
         api: 'steamgames/76561199221873292'

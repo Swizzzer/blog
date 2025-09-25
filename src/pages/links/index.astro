@@ -2,14 +2,12 @@
 import links from 'public/links.json'
 import config from 'virtual:config'
 
-import { Collapse, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
 import FriendList from '@/components/links/FriendList.astro'
 
 const headings = [
-  { depth: 2, slug: 'del0n1x', text: 'Del0n1x' },
-  { depth: 2, slug: 'special-links', text: 'Special Links' },
-  { depth: 2, slug: 'apply-links', text: 'Apply Links' }
+  { depth: 2, slug: 'common-links', text: 'Friends' },
+  { depth: 2, slug: 'apply-links', text: 'Myself' }
 ]
 
 const { friends } = links
@@ -18,20 +16,12 @@ const linksConf = config.integ.links
 
 <PageLayout title='Links' {headings} comment>
   <p>我是何其幸运，能仰望你们展翅高飞的背影</p>
-  <h2 id='del0n1x'>Del0n1x</h2>
+  <h2 id='common-links'>Friends</h2>
   <FriendList list={friends[0]} />
-  <Collapse title='Links with Bad Status'>
-    <FriendList list={friends[1]} />
-  </Collapse>
-  <Collapse title='Link History Book'>
-    <Timeline events={linksConf.logbook} />
-  </Collapse>
-  <h2 id='special-links'>Special Links</h2>
-  <FriendList list={friends[2]} />
 
   <!-- apply-links -->
-  <h2 id='apply-links'>Apply Links</h2>
-  <p>本站信息（点击复制）The site information (click to copy)：</p>
+  <h2 id='apply-links'>Myself</h2>
+  <p>The site information (click to copy)：</p>
   <blockquote class='not-prose grid grid-cols-[auto_1fr] gap-x-2 break-words border-s-4 ps-4'>
     {
       linksConf.applyTip.map(({ name, val }) => {

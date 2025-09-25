@@ -63,15 +63,9 @@ export const theme: ThemeUserConfig = {
 		// Year format
 		year: `© ${new Date().getFullYear()}`,
 		// year: `© 2019 - ${new Date().getFullYear()}`,
-		links: [
-			{
-				title: "Diaries",
-				link: "/diary/list",
-				pos: 2, // position set to 2 will be appended to copyright line
-			},
-		],
+		links: [],
 		/** Enable displaying a “Astro & Pure theme powered” link in your site’s footer. */
-		credits: true,
+		credits: false,
 		/** Optional details about the social media accounts for this site. */
 		social: {
 			github: "https://github.com/Swizzzer",
@@ -101,22 +95,13 @@ export const integ: IntegrationUserConfig = {
 	// See: https://astro-pure.js.org/docs/integrations/links
 	links: {
 		// Friend logbook
-		logbook: [
-			{ date: "2025-03-16", content: "Is there a leakage?" },
-			{ date: "2025-03-16", content: "A leakage of what?" },
-			{
-				date: "2025-03-16",
-				content: "I have a full seat of water, like, full of water!",
-			},
-			{ date: "2025-03-16", content: "Must be the water." },
-			{ date: "2025-03-16", content: "Let's add that to the words of wisdom." },
-		],
+		logbook: [],
 		// Yourself link info
 		applyTip: [
 			{ name: "Name", val: theme.title },
 			{ name: "Desc", val: theme.description || "Null" },
-			{ name: "Link", val: "https://astro-pure.js.org/" },
-			{ name: "Avatar", val: "https://astro-pure.js.org/favicon/favicon.ico" },
+			{ name: "Link", val: "https://blog.swizzer.cc/" },
+			{ name: "Avatar", val: "https://pic.swizzer.cc/avatar.jpg" },
 		],
 	},
 	// Enable page search function
