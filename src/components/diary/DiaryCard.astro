@@ -1,7 +1,7 @@
 ---
 import { render, type CollectionEntry } from 'astro:content'
 import { cn } from 'astro-pure/utils'
-import { FormattedDate, Icon, Collapse } from 'astro-pure/user'
+import { FormattedDate, Icon } from 'astro-pure/user'
 
 interface Props {
   entry: CollectionEntry<'diary'>
@@ -15,9 +15,10 @@ const { Content } = await render(entry)
 ---
 
 <div class={cn('diary-card', className)}>
-  <Collapse title={data.title} class="border-0">
-    <!-- Header metadata as before slot -->
-    <div slot="before" class="pt-3 pb-3 border-b border-border/30">
+  <!-- 使用自定义的折叠实现来避免嵌套冲突 -->
+  <div class="diary-collapse-container rounded-xl border px-3 my-4 sm:px-4">
+    <!-- Header metadata -->
+    <div class="pt-3 pb-3 border-b border-border/30">
       <div class='flex flex-wrap items-center justify-between gap-2'>
         <div class='flex items-center gap-2 text-sm text-muted-foreground'>
           <Icon name='time' class='size-4' />
@@ -46,16 +47,106 @@ const { Content } = await render(entry)
       </div>
     </div>
 
-    <!-- Content -->
-    <div class='prose prose-sm max-w-none text-muted-foreground mt-3'>
-      <Content />
+    <!-- Title and expand button -->
+    <div class="diary-title-bar sticky top-0 z-20 flex cursor-pointer items-center justify-between py-1.5 sm:py-2">
+      <p class="m-0 transition-colors hover:text-primary">{data.title}</p>
+      <button class="diary-expand-btn" type="button" aria-label="展开/收起">
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='16'
+          height='16'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke-width='2.5'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+          class='my-1 stroke-muted-foreground transition-all duration-300 hover:stroke-primary diary-expand-icon'
+        >
+          <line x1='5' y1='12' x2='19' y2='12' class='diary-expand-line translate-x-1 scale-x-100 duration-300 ease-in-out'></line>
+          <polyline points='12 5 19 12 12 19' class='diary-expand-arrow translate-x-1 duration-300 ease-in-out'></polyline>
+        </svg>
+      </button>
     </div>
-  </Collapse>
+
+    <!-- Content -->
+    <div class='diary-content grid opacity-0 transition-all duration-300 ease-in-out'>
+      <div class='overflow-hidden'>
+        <div class='prose prose-sm max-w-none text-muted-foreground mt-3 mb-3'>
+          <Content />
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.diary-title-bar').forEach((titleBar) => {
+      titleBar.addEventListener('click', (e) => {
+        e.stopPropagation()
+        const container = titleBar.closest('.diary-collapse-container')
+        const content = container?.querySelector('.diary-content') as HTMLElement
+        const icon = titleBar.querySelector('.diary-expand-icon') as HTMLElement
+        
+        if (container && content && icon) {
+          const isExpanded = container.classList.contains('expanded')
+          
+          if (isExpanded) {
+            // 收起
+            container.classList.remove('expanded')
+            content.style.gridTemplateRows = '0fr'
+            content.style.opacity = '0'
+            icon.style.transform = 'rotate(0deg)'
+            const line = titleBar.querySelector('.diary-expand-line') as HTMLElement
+            const arrow = titleBar.querySelector('.diary-expand-arrow') as HTMLElement
+            if (line) line.style.transform = 'translateX(0.25rem) scaleX(1)'
+            if (arrow) arrow.style.transform = 'translateX(0.25rem)'
+          } else {
+            // 展开
+            container.classList.add('expanded')
+            content.style.gridTemplateRows = '1fr'
+            content.style.opacity = '1'
+            icon.style.transform = 'rotate(-90deg)'
+            const line = titleBar.querySelector('.diary-expand-line') as HTMLElement
+            const arrow = titleBar.querySelector('.diary-expand-arrow') as HTMLElement
+            if (line) line.style.transform = 'translateX(1rem) scaleX(0)'
+            if (arrow) arrow.style.transform = 'translateX(0)'
+          }
+        }
+      })
+    })
+  })
+</script>
 
 <style>
   .diary-card {
     container-type: inline-size;
+  }
+
+  .diary-collapse-container.expanded {
+    background-color: hsl(var(--muted));
+  }
+
+  .diary-collapse-container.expanded .diary-title-bar {
+    background-color: hsl(var(--muted));
+  }
+
+  .diary-content {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  .diary-collapse-container.expanded .diary-content {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-bottom: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .diary-collapse-container.expanded .diary-content {
+      margin-bottom: 1rem;
+    }
   }
 
   .diary-card .prose {
@@ -72,6 +163,11 @@ const { Content } = await render(entry)
 
   .diary-card:hover .prose {
     --tw-prose-body: hsl(var(--foreground));
+  }
+
+  /* 增加Card组件在日记展开后的下边距 */
+  .diary-card .prose :global(.not-prose):last-child {
+    margin-bottom: 1rem;
   }
 
   /* Responsive adjustments */
