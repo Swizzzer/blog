@@ -94,7 +94,7 @@ if __name__ == "__main__":
 
 熵密杯这题因为性能瓶颈在于`hashlib.update()`所以Python层面能优化的不多。如果性能瓶颈在Python，就可以用上一些额外的优化，比如，用JIT优化热点路径。
 
-以[2025 CubeCTF - Elemetary](https://blog.swizzer.cc/posts/2025-cubectf/#elementary)为例。blog里原版的攻击脚本如果用CPython跑，大概要跑这么久：
+以[2025 CubeCTF - Elemetary](https://blog.swizzer.cc/blog/2025-cubectf/#elementary)为例。blog里原版的攻击脚本如果用CPython跑，大概要跑这么久：
 
 ![so slow](assets/image-52.png)
 

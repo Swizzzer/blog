@@ -428,7 +428,7 @@ print(long_to_bytes(flag).decode())
 
 密码那题`MINI AURA`完全不知道哪里是密码，队内Pwn大跌用qemu嗯调嗯逆了大半天做出来的，结果赛后看SU的题解直接用Ghidra+插件就反汇编出来了👿
 
-> 这个插件[@oldking](https://oldkingok.cc/)早就找着了，但是他那边测下来完全反汇编不出来这题
+> 这个插件[@oldkingOK](https://oldkingok.cc/)早就找着了，但是他那边测下来完全反汇编不出来这题
 
 `Mini Jail`那题头天晚上看的时候想出来了切出`s`的方法，但是没想到怎么切出来`h`；第二天离完赛还有半小时的时候上号又看了看，最后赶在结束前8min才做出来🥹
 
