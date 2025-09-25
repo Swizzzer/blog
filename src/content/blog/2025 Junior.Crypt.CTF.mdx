@@ -9,6 +9,8 @@ draft: false
 lang: ''
 ---
 
+import {Aside} from 'astro-pure/user'
+
 🇧🇾某不知名学院办的类似新生赛的东西。去年跟@cheng_xing打过一次刷榜到rank #50+，今年solo参赛，被迫重回Misc老本行...
 
 > 大部分靠Vibe Coding，最后居然还混到了rank #31
@@ -382,8 +384,8 @@ flag = f"grodno{{{final_hash}}}"
 print(f"\n[+] The TRUE Final Flag is: {flag}")
 ```
 
-:::note[Swizzer秘谈]
+<Aside type="note" title="Swizzer秘谈">
 就普遍水平而言，国内的Crypto手应该比国外的强——连UofT的队伍都在PPC的最后一题(事实上是 TPCTF 2025 最简单的一道密码题)上卡了足足24h+，而TPCTF当时这题都快被打烂了...
 
 Misc里有几个ZKP，解题方法没什么新颖的，基本是朴实无华的爆破/求解DLP，不过还是从其中一个学到了Sagemath的discrete_log()函数是可以指定bounds的——而且可指定的参数好像还挺多，感觉很黑科技，有空得好好研究研究。
-:::
+</Aside>

@@ -7,6 +7,7 @@ tags: ['CTF', 'Crypto', '流密码', 'Lattice', 'Race Condition']
 category: 'Writeups'
 draft: false 
 ---
+import {Aside} from 'astro-pure/user'
 
 记录一下我解的几题。
 
@@ -510,7 +511,7 @@ if __name__ == '__main__':
 # 🎉🎉🎉
 ```
 
-:::tip[Swizzer秘谈]
+<Aside type="note" title="Swizzer秘谈">
 当然，其实这题还有个野路子：从生成的json的明密文对中计算出所有密钥流(我这边的附件计算出来只有33种可能)，接着直接拿去跟flag的密文xor，就能得到33种输出，其中比较接近flag的一种是`b" TF\xcbw3_aRe_g0Nn@\x80\xe9\x15\xa2_MY_FuncKee_'Hyley_!!}"`
 
 前缀是CTF，然后比较这33种输出可以确定出来flag会是`CTF{w3_aRe_g0Nn@????_MY_FuncKee_????ey_!!}`的形式，`g0Nn@`是`gonna`的leet，后面肯定是下划线，ey结尾的单词猜一个monkey，flag就变成了`CTF{w3_aRe_g0Nn@_???_MY_FuncKee_monkey_!!}`
@@ -518,7 +519,7 @@ if __name__ == '__main__':
 然后我猜了两个`CTF{w3_aRe_g0Nn@_get_MY_FuncKee_monkey_!!}`和`CTF{w3_aRe_g0Nn@_g3t_MY_FuncKee_monkey_!!}`，但是交上去都没过，所以后来就认认真真地研究了下为什么64种nonce和64种counter组合出来的密钥流却只有这么几种可能——没想到离答案真的一步之遥w
 
 其实从直接xor的结果也能看出来这个加密系统的混淆-扩散性质非常烂，一部分直接就是明文。
-:::
+</Aside>
 
 ### filtermaze
 
@@ -6471,8 +6472,8 @@ done
 
 ![错在Swizzer](assets/image-47.png)
 
-:::note
+<Aside type="note" title="后日谈">
 虽然主力web手和pwn手都没打，不过还是努力打进了前100，也是Del0n1x成立以来第一次在GoogleCTF上做出来题目。
 
 > 7月份全力的imaginaryCTF会有多强我都不敢想了😋
-:::
+</Aside>

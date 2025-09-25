@@ -7,6 +7,7 @@ category: 'Writeups'
 updated: 2025-06-27
 draft: false 
 ---
+import {Aside} from 'astro-pure/user'
 
 手痒挑点题做做，顺便为今年的CryptoCTF做点准备。
 
@@ -142,9 +143,9 @@ $$
 
 当然就算r不是素数我们也能在r的素因子 $r_k$ 里去尝试求q，那样求出的q无非是 $\pmod{r_k}$ 而已，然后Coppersmith也不是不行，这题的数据范围也刚好可以Copper($r_{max}$ 有186bits，q只有256bits)。
 
-:::note
+<Aside type="note" title="补充">
 可以预先判断下是不是二次剩余，减少需要Copeprsmith的candidates数
-:::
+</Aside>
 
 ```python collapse={1-4} title="exp.py"
 n = 200697881793620389197751143658858424075492240536004468937396825699483210280999214674828938407830171522000573896259413231953182108686782019862906633259090814783111593304404356927145683840948437835426703183742322171552269964159917779
@@ -307,9 +308,9 @@ print(long_to_bytes(pow(c,d,PP*QQ)))
 # b'flag{dummy_flag_for_testing!}\x8b\x11dl\xfd\xd0Xe\xd0\x99\x8d\xc4?\xc3\xae\x81\x98\xdfa) >\xfd\x00\xdc\xa7?\xed\xb2\xd2\x17\x0c\t\x18\xdf\x80\xf7\xbb\xa1\x90\x00C\x89\xe2-EU\xe6\xf6;\xcf\xca<\x9fG\x0f\xcc\xb9\x0b\x0f\x825\x8f\xcd'
 ```
 
-:::note
+<Aside type="note" title="补充">
 原题的e是3,所以八成会有不互素的问题要AMM，跟想练的东西没关系，这里直接改成了65537。并且原题多给了 $M\%l$ 的信息，使得直接Copper似乎也是可以的，这里用的例子修复了这个非预期😂
-:::
+</Aside>
 
 ## imaginaryCTF round45 - Moonjump
 
