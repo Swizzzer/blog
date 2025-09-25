@@ -1,7 +1,7 @@
 ---
 import { render, type CollectionEntry } from 'astro:content'
 import { cn } from 'astro-pure/utils'
-import { FormattedDate, Icon, Button, Collapse } from 'astro-pure/user'
+import { FormattedDate, Icon, Collapse } from 'astro-pure/user'
 
 interface Props {
   entry: CollectionEntry<'diary'>
@@ -17,8 +17,8 @@ const { Content } = await render(entry)
 <div class={cn('diary-card', className)}>
   <Collapse title={data.title} class="border-0">
     <!-- Header metadata as before slot -->
-    <div slot="before" class="pb-2 border-b border-border/30">
-      <div class='flex flex-wrap items-center justify-between gap-2 mb-2'>
+    <div slot="before" class="pt-3 pb-3 border-b border-border/30">
+      <div class='flex flex-wrap items-center justify-between gap-2'>
         <div class='flex items-center gap-2 text-sm text-muted-foreground'>
           <Icon name='time' class='size-4' />
           <FormattedDate date={data.date} />
@@ -44,15 +44,6 @@ const { Content } = await render(entry)
           )}
         </div>
       </div>
-      
-      <!-- Tags -->
-      {data.tags && data.tags.length > 0 && (
-        <div class='flex flex-wrap gap-1'>
-          {data.tags.map((tag: string) => (
-            <Button title={tag} variant='pill' class='text-xs' />
-          ))}
-        </div>
-      )}
     </div>
 
     <!-- Content -->
