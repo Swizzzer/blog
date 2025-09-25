@@ -1,0 +1,92 @@
+---
+import { render, type CollectionEntry } from 'astro:content'
+import { cn } from 'astro-pure/utils'
+import { FormattedDate, Icon, Button, Collapse } from 'astro-pure/user'
+
+interface Props {
+  entry: CollectionEntry<'diary'>
+  class?: string
+}
+
+const { entry, class: className } = Astro.props
+
+const { data } = entry
+const { Content } = await render(entry)
+---
+
+<div class={cn('diary-card', className)}>
+  <Collapse title={data.title} class="border-0">
+    <!-- Header metadata as before slot -->
+    <div slot="before" class="pb-2 border-b border-border/30">
+      <div class='flex flex-wrap items-center justify-between gap-2 mb-2'>
+        <div class='flex items-center gap-2 text-sm text-muted-foreground'>
+          <Icon name='time' class='size-4' />
+          <FormattedDate date={data.date} />
+        </div>
+        <div class='flex flex-wrap items-center gap-2 text-xs'>
+          {data.mood && (
+            <div class='flex items-center gap-1 text-muted-foreground'>
+              <Icon name='bulb' class='size-3' />
+              <span>{data.mood}</span>
+            </div>
+          )}
+          {data.weather && (
+            <div class='flex items-center gap-1 text-muted-foreground'>
+              <Icon name='sun' class='size-3' />
+              <span>{data.weather}</span>
+            </div>
+          )}
+          {data.location && (
+            <div class='flex items-center gap-1 text-muted-foreground'>
+              <Icon name='earth' class='size-3' />
+              <span>{data.location}</span>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      <!-- Tags -->
+      {data.tags && data.tags.length > 0 && (
+        <div class='flex flex-wrap gap-1'>
+          {data.tags.map((tag: string) => (
+            <Button title={tag} variant='pill' class='text-xs' />
+          ))}
+        </div>
+      )}
+    </div>
+
+    <!-- Content -->
+    <div class='prose prose-sm max-w-none text-muted-foreground mt-3'>
+      <Content />
+    </div>
+  </Collapse>
+</div>
+
+<style>
+  .diary-card {
+    container-type: inline-size;
+  }
+
+  .diary-card .prose {
+    --tw-prose-body: hsl(var(--muted-foreground));
+    --tw-prose-headings: hsl(var(--foreground));
+    --tw-prose-links: hsl(var(--primary));
+    --tw-prose-bold: hsl(var(--foreground));
+    --tw-prose-code: hsl(var(--foreground));
+    --tw-prose-pre-code: hsl(var(--muted-foreground));
+    --tw-prose-pre-bg: hsl(var(--muted));
+    --tw-prose-quotes: hsl(var(--muted-foreground));
+    --tw-prose-quote-borders: hsl(var(--border));
+  }
+
+  .diary-card:hover .prose {
+    --tw-prose-body: hsl(var(--foreground));
+  }
+
+  /* Responsive adjustments */
+  @container (max-width: 400px) {
+    .diary-card {
+      padding: 1rem;
+    }
+  }
+</style>

@@ -1,0 +1,192 @@
+---
+import { getCollection } from 'astro:content'
+import { Button } from 'astro-pure/user'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import DiaryCard from '@/components/diary/DiaryCard.astro'
+
+export const prerender = true
+
+// Get diary entries and sort by date (most recent first)
+const allDiaries = await getCollection('diary', ({ data }) => !data.draft)
+const allDiariesByDate = allDiaries.sort((a, b) => {
+  const aDate = new Date(a.data.date).valueOf()
+  const bDate = new Date(b.data.date).valueOf()
+  return bDate - aDate // 倒序排列，最新的在前面
+})
+
+const meta = {
+  description: '我的日记 - 记录生活的点点滴滴',
+  title: 'Diary'
+}
+---
+
+<PageLayout {meta}>
+  <Button title='Back' href='/' variant='back' />
+  <main class='mt-6 lg:mt-10'>
+    <div id='content-header' class='animate'>
+      <h1 class='mb-6 text-3xl font-medium'>Diary</h1>
+      <p class='text-muted-foreground'>生活的观后感</p>
+    </div>
+
+    {allDiariesByDate.length === 0 ? (
+      <div class='animate text-center py-20'>
+        <p class='text-muted-foreground text-lg'>还没有任何日记呢...</p>
+        <p class='text-muted-foreground text-sm mt-2'>开始写下第一篇日记吧！</p>
+      </div>
+    ) : (
+      <section id='diary-content' class='animate' aria-label='Diary entries'>
+        <div class='mb-4 text-sm text-muted-foreground'>
+          共有 {allDiariesByDate.length} 篇日记
+        </div>
+        
+        <!-- Infinite scroll container -->
+        <div id='diary-container' class='space-y-6'>
+          {allDiariesByDate.map((diary) => (
+            <DiaryCard entry={diary} class='diary-item' />
+          ))}
+        </div>
+
+        <!-- Loading indicator (hidden by default) -->
+        <div id='loading' class='hidden text-center py-8'>
+          <div class='inline-flex items-center gap-2 text-muted-foreground'>
+            <div class='animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent'></div>
+            <span>加载中...</span>
+          </div>
+        </div>
+
+        <!-- End indicator -->
+        <div id='end-indicator' class='hidden text-center py-8 text-muted-foreground'>
+          <p>已经到底了 ✨</p>
+        </div>
+      </section>
+    )}
+  </main>
+</PageLayout>
+
+<script>
+  // Infinite scroll functionality
+  class InfiniteScroll {
+    private container: HTMLElement
+    private loading: HTMLElement
+    private endIndicator: HTMLElement
+    private items: HTMLElement[]
+    private itemsPerPage = 5
+    private currentPage = 1
+    private isLoading = false
+
+    constructor() {
+      this.container = document.getElementById('diary-container')!
+      this.loading = document.getElementById('loading')!
+      this.endIndicator = document.getElementById('end-indicator')!
+      this.items = Array.from(document.querySelectorAll('.diary-item'))
+      
+      this.init()
+    }
+
+    init() {
+      // Hide all items initially
+      this.items.forEach((item, index) => {
+        if (index >= this.itemsPerPage) {
+          item.style.display = 'none'
+        }
+      })
+
+      // Set up intersection observer for infinite scroll
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !this.isLoading) {
+              this.loadMore()
+            }
+          })
+        },
+        {
+          rootMargin: '100px'
+        }
+      )
+
+      // Create sentinel element
+      const sentinel = document.createElement('div')
+      sentinel.className = 'sentinel'
+      this.container.parentNode?.insertBefore(sentinel, this.loading)
+      observer.observe(sentinel)
+
+      // Show end indicator if all items are already visible
+      if (this.items.length <= this.itemsPerPage) {
+        this.showEndIndicator()
+      }
+    }
+
+    async loadMore() {
+      if (this.isLoading) return
+
+      const totalPages = Math.ceil(this.items.length / this.itemsPerPage)
+      
+      if (this.currentPage >= totalPages) {
+        this.showEndIndicator()
+        return
+      }
+
+      this.isLoading = true
+      this.loading.classList.remove('hidden')
+
+      // Simulate loading delay for better UX
+      await new Promise(resolve => setTimeout(resolve, 500))
+
+      // Show next batch of items
+      const startIndex = this.currentPage * this.itemsPerPage
+      const endIndex = Math.min(startIndex + this.itemsPerPage, this.items.length)
+
+      for (let i = startIndex; i < endIndex; i++) {
+        if (this.items[i]) {
+          this.items[i].style.display = 'block'
+          // Add animation
+          this.items[i].style.opacity = '0'
+          this.items[i].style.transform = 'translateY(20px)'
+          
+          // Trigger animation
+          requestAnimationFrame(() => {
+            this.items[i].style.transition = 'all 0.3s ease-out'
+            this.items[i].style.opacity = '1'
+            this.items[i].style.transform = 'translateY(0)'
+          })
+        }
+      }
+
+      this.currentPage++
+      this.isLoading = false
+      this.loading.classList.add('hidden')
+
+      // Check if we've shown all items
+      if (this.currentPage >= totalPages) {
+        this.showEndIndicator()
+      }
+    }
+
+    showEndIndicator() {
+      // Remove sentinel to stop triggering
+      const sentinel = document.querySelector('.sentinel')
+      if (sentinel) {
+        sentinel.remove()
+      }
+      this.endIndicator.classList.remove('hidden')
+    }
+  }
+
+  // Initialize infinite scroll when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.querySelector('.diary-item')) {
+      new InfiniteScroll()
+    }
+  })
+</script>
+
+<style>
+  .diary-item {
+    transition: all 0.3s ease-out;
+  }
+
+  .diary-item:hover {
+    transform: translateY(-2px);
+  }
+</style>

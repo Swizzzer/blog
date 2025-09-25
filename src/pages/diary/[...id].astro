@@ -1,0 +1,27 @@
+---
+import { render, type CollectionEntry } from 'astro:content'
+import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
+import DiaryLayout from '@/layouts/DiaryPost.astro'
+
+export const prerender = true
+
+export async function getStaticPaths() {
+  const diaries = sortMDByDate(await getBlogCollection('diary')) as CollectionEntry<'diary'>[]
+  return diaries.map((diary) => ({
+    params: { id: diary.id },
+    props: { diary, diaries }
+  }))
+}
+
+type Props = {
+  diary: CollectionEntry<'diary'>
+  diaries: CollectionEntry<'diary'>[]
+}
+
+const { diary, diaries } = Astro.props
+const { Content, headings } = await render(diary)
+---
+
+<DiaryLayout {diary} {diaries} {headings}>
+  <Content />
+</DiaryLayout>
