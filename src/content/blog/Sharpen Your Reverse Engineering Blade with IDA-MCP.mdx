@@ -31,7 +31,9 @@ MCP说到底就是给了LLM调用外部工具的能力，换言之，有了IDA M
 
 ## 配置IDA MCP
 
-::github{repo="mrexodia/ida-pro-mcp"}
+import {GithubCard} from 'astro-pure/advanced'
+
+<GithubCard repo='mrexodia/ida-pro-mcp' />
 
 大部分配置过程都在repo里写了，除了VSCode的配置过程。其实VSCode配置也很简单，执行`ida-pro-mcp --config`后把输出复制一下，把`mcpServers`这个item name改成`servers`然后扔进工作区里的`.vscode/mcp.json`就行：
 

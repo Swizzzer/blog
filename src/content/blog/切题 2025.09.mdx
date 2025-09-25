@@ -7,8 +7,7 @@ category: 'Writeups'
 draft: false 
 lang: ''
 ---
-
-缓慢更新中...
+import { Tabs, TabItem } from 'astro-pure/user';
 
 ## crewCTF 2025 - po1337nomial
 
@@ -275,7 +274,8 @@ Q = D;
 因此问题就变为计算有理函数 $\dfrac{P(x,u)}{Q(x,u)}$ 在 $x^N$ 项的系数多项式，再取该多项式的 $u^K$ 系数。后续的多项式相关操作找板子加速即可，我的代码里最终用了Bostan-Mori、NTT和奇偶分解这几大块的优化。
 
 ### solve
-
+<Tabs>
+<TabItem label="solver.cpp">
 ```cpp title="solver.cpp" collapse={2-337}
 // g++ -O3 -march=native -std=c++17 -pipe solver.cpp -o solver
 #include <bits/stdc++.h>
@@ -615,7 +615,8 @@ int main() {
   return 0;
 }
 ```
-
+</TabItem>
+<TabItem label="solve.py">
 ```python title="solve.py"
 from pwn import *
 from tqdm import trange
@@ -691,7 +692,8 @@ if __name__ == "__main__":
   io = remote("ioioioi.chal.crewc.tf", 1337, ssl=True)
   processing(io)
 ```
-
+</TabItem>
+</Tabs>
 ## HITCONCTF 2025 - pedantic
 
 ```python title="server.py"
@@ -792,7 +794,25 @@ if __name__ == "__main__":
 
 最喜欢的maple师傅的题🥰 ~~今年maple佬似乎有点忙，很久之前就听说imaginaryCTF他都没来出题...不过还好HITCON里见到了~~
 
-题目实现了一个secp256k1曲线上的ZKP协议，代码比较长但总之verify逻辑是这样：
+题目实现了一个secp256k1曲线上的ZKP协议，以及相关参数：
+```python
+p = secp256k1.p
+q = secp256k1.q
+G = secp256k1.G
+```
+
+然后`prove()`是这样的：
+```python
+def prove(x: int, n: int) -> ProofType:
+  rs = [secrets.randbelow(q) for _ in range(n)]
+  Grs = [G * r for r in rs]
+  cs = hash_points_to_scalars(Grs, n)
+  zs = [(r + c * x) % q for r, c in zip(rs, cs)]
+  return list(zip(Grs, zs))
+```
+其中`hash_points_to_scalars()`也是用来生成随机数的，会把所有的 $Gr_i$ 哈希后求和当作seed，seeding LCG去生成一串随机数作为$c_i$。
+
+verify逻辑则是如下：
 
 $$
 z_i*G == Gr_i+c_i*Y
@@ -800,3 +820,88 @@ $$
 
 其中我们输入的是 $z_i, Gr_i$，$Y$ 满足 $Y = x*G$，$x$ 为私钥，$Y$ 为公钥。
 
+ZKP协议本身没什么问题，`hash_points_to_scalars()`里的hash也是SHA-256，几乎也打不动，所以唯一的疑点就是这个LCG了。LCG说实话也不是很能打，毕竟我们只能控制输入的$Gr_i$，
+这些点还得求和hash之后才能当作seed。
+
+import {Aside, Spoiler} from 'astro-pure/user';
+
+<Aside type='note'>
+退一步来说，就算有办法直接控制seed也不能很随心所欲地控制输出，毕竟隔了一层LCG呢
+</Aside>
+
+我们知道有些LCG是存在轨道/不动点的——对于特定的seed，LCG的迭代输出可能会进入一个循环，甚至是固定不变的值。这其实跟动力系统很像。本题的LCG同样存在不动点。
+因此对于我们来说，最朴素的想法就是控制输入使得seed为不动点，这样LCG的输出比较简单，后面做题大概率也会简化一点。
+
+输入的seed是不动点，$z_i$也是我们指定的，那么$Gr_i$直接就能计算出来。问题在于，怎么确保这些$Gr_i$经过hash求和之后刚好就等于不动点seed呢？
+
+直觉上会觉得有点像LLL<Spoiler>看见线性关系就想格说是</Spoiler>，因为我们其实只需要找到这么一组系数${a_i}$使得$\Sigma a_i * hash(Gr_i)$等于不动点seed即可，到时候我们传入$Gr_i$的时候把对应的$Gr_i$和$z_i$重复$a_i$次就好了。
+
+偷懒不想写exp了，放个maple写的然后跑路🥰
+
+<Tabs>
+<TabItem label='solve.py'>
+```python
+from sage.all import *
+import gzip
+import hashlib
+
+from binteger import Bin
+from server import (
+    G,
+    deserialize_proof,
+    hash_point,
+    hash_points_to_scalars,
+    q,
+    scalar_bytes,
+    serialize_proof,
+    verify,
+)
+from lll_cvp import affine_cvp, qary_lattice
+
+from pwn import process, remote
+
+# io = process(["python", "server.py"])
+# io = remote("localhost", 1337)
+io = remote("pedantic.chal.hitconctf.com", 1337)
+io.recvuntil(b"proof:\n")
+proof = deserialize_proof(io.recvlineS().strip())
+
+Grs, zs = zip(*proof)
+cs = hash_points_to_scalars(Grs, len(Grs))
+Y = (G * zs[0] - Grs[0]) * pow(cs[0], -1, q)
+print(Y)  # use this as input to the golang solver to get solution_with_z.txt
+
+F = GF(q)
+a = F(1337)
+b = F(7331)
+c = int(-b / (a - 1))  # fixed opint
+assert a * c + b == c
+
+
+m = 64
+zs = list(range(m))
+Grs = [G * z - Y * c for z in zs]
+hs = [hash_point(Gr) for Gr in Grs]
+L = matrix(F, hs)
+rhs = vector(F, [c])
+
+# we want to find a short, positive solution to L * ? = rhs
+s0 = L.solve_right(rhs).change_ring(ZZ)
+ker = L.right_kernel_matrix()
+# the solution should be positive, so we find a vector close to 20
+t = affine_cvp(s0, qary_lattice(ker, q), vector([20] * m))
+print(t, sum(t))
+assert L * t == rhs
+assert all([x >= 0 for x in t])
+
+Grs = sum([[Gr] * x for Gr, x in zip(Grs, t)], [])
+zs = sum([[z] * x for z, x in zip(zs, t)], [])
+
+proof = list(zip(Grs, zs))
+assert verify(Y, proof) == sum(t)
+
+io.sendline(serialize_proof(proof).encode())
+print(io.recvallS().strip())
+```
+</TabItem>
+</Tabs>
