@@ -93,7 +93,7 @@ export const theme: ThemeUserConfig = {
 
 export const integ: IntegrationUserConfig = {
 	// Links management
-	// See: https://astro-pure.js.org/docs/integrations/links
+
 	links: {
 		// Friend logbook
 		logbook: [],
@@ -117,7 +117,6 @@ export const integ: IntegrationUserConfig = {
 		inlineCodeBlockStyle: "modern",
 	},
 	// A lightbox library that can add zoom effect
-	// See: https://astro-pure.js.org/docs/integrations/others#medium-zoom
 	mediumZoom: {
 		enable: true, // disable it will not load the whole library
 		selector: ".prose .zoomable",
