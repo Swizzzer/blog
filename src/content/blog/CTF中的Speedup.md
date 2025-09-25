@@ -2,7 +2,6 @@
 title: CTF中的Speedup
 publishDate: 2025-07-21
 description: '其实本来想叫"用Speedup赢得CTF"的，不过想了想我好像没赢过'
-image: ''
 tags: ["CTF", "多线程", "GPU编程", "Crypto", "numba"]
 category: '技术'
 draft: false 

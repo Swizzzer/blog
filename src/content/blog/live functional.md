@@ -2,7 +2,7 @@
 title: live functional
 publishDate: 2025-06-23
 description: "疏离的，散漫的，自由的，遥远的"
-image: "https://pic.swizzer.cc/2025/06/5b1ec99ffc389236bea536cbbce27b30.png"
+heroImage: { src: "https://pic.swizzer.cc/2025/06/5b1ec99ffc389236bea536cbbce27b30.png", inferSize: true}
 tags: ["生活"]
 category: "杂记"
 ---

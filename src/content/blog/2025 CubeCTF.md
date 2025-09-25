@@ -2,7 +2,7 @@
 title: 2025 CubeCTF
 publishDate: 2025-07-07
 description: '队友之前就有转型国际联队的意愿，但Del0n1x毕竟是Academic Team所以这么做不太好。这次趁着CubeCTF拉了个国际联队，以便为未来组建Del0n1x国际版积累经验。'
-image: 'assets/image.png'
+heroImage: { src: 'assets/image.png'}
 tags: ['CTF', 'Crypto', 'Forensics', 'birthday attack']
 category: 'Writeups'
 draft: false 

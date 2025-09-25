@@ -3,7 +3,7 @@ title: RSA LSB Oracle Attack
 tags: ["Crypto", "RSA"]
 category: Notes
 publishDate: 2024-11-29
-description: "翻看[crypto attacks](https://github.com/jvdsn/crypto-attacks)时发现的一种攻击，稍微研究了下。"
+description: "翻看 https://github.com/jvdsn/crypto-attacks 时发现的一种攻击，稍微研究了下。"
 ---
 
 原版脚本只支持模2情况下的oracle，这里我们考虑一个模k的oracle。

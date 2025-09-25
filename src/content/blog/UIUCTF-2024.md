@@ -3,7 +3,7 @@ title: UIUCTF 2024 Writeups
 tags: ["CTF", "Crypto"]
 category: Writeups
 publishDate: 2024-07-01 19:05:17
-image: "assets/image-29.png"
+heroImage: { src: "assets/image-29.png"}
 description: ""
 ---
 

@@ -2,7 +2,7 @@
 title: Sharpen Your Reverse Engineering Blade with IDA-MCP
 publishDate: 2025-08-14
 description: '科技改变生活'
-image: 'https://pic.swizzer.cc/2025/08/2f00f6c29060173f1a5fc02646b1bb65.png'
+heroImage: { src: 'https://pic.swizzer.cc/2025/08/2f00f6c29060173f1a5fc02646b1bb65.png', inferSize: true}
 tags: ["MCP", "AI", "Reverse"]
 category: '技术'
 draft: false 

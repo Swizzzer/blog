@@ -2,7 +2,7 @@
 title: 2025 Junior.Crypt.CTF
 publishDate: 2025-07-03
 description: '刷分比赛就是爽'
-image: 'https://pic.swizzer.cc/2025/07/0bc079e8a6d3606dbb4782a3f12be13f.png'
+heroImage: {src: 'https://pic.swizzer.cc/2025/07/0bc079e8a6d3606dbb4782a3f12be13f.png', inferSize: true}
 tags: ['MT19937', 'Misc', 'bmp', 'CTF']
 category: 'Writeups'
 draft: false 

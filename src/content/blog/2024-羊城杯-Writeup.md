@@ -2,7 +2,6 @@
 title: 2024 羊城杯 Writeup
 publishDate: 2024-08-27
 description: "这次羊城杯手感不错，密码AK同时还拿了两个一血和一个二血。"
-# image: "./cover.jpeg"
 tags: ["CTF", "Crypto"]
 category: Writeups
 draft: false

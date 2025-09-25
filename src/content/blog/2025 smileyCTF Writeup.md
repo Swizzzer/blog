@@ -2,7 +2,7 @@
 title: 2025 smileyCTF Writeup
 publishDate: 2025-06-16
 description: '半数主力参加的比赛，最终rank 56/1090，全球前5%。队友还是一如既往的强，first blood了有解的逆向中最难的一题🫡'
-image: 'assets/smiley_rank.jpeg'
+heroImage: { src: 'assets/smiley_rank.jpeg'}
 tags: ["CTF", "Misc", "Reverse", "Crypto"]
 category: 'Writeups'
 draft: false 

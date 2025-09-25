@@ -4,7 +4,7 @@ tags: ["CTF", "Crypto"]
 category: Writeups
 publishDate: 2024-07-22 
 draft: false
-image: "assets/image-28.png"
+heroImage: { src: "assets/image-28.png"}
 description: "Del0n1x这次全员参战，最终rank 27/1457，也是打进top 2%了😋这里主要记录下我解的几道题。"
 ---
 

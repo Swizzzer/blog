@@ -2,7 +2,7 @@
 title: 2025 TFCCTF Writeup
 publishDate: 2025-09-01
 description: '打打停停，勉强排在#22'
-image: 'https://pic.swizzer.cc/2025/09/4630895136cf1924bdbeed295e1642c3.png'
+heroImage: {src: 'https://pic.swizzer.cc/2025/09/4630895136cf1924bdbeed295e1642c3.png', inferSize: true}
 tags: ["CTF", "Misc", "Crypto", "Jail", "Lattice"]
 category: 'Writeups'
 draft: false 

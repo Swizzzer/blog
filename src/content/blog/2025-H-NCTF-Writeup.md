@@ -3,7 +3,7 @@ title: 2025 H&NCTF Writeup
 tags: ["CTF", "Crypto"]
 category: Writeups
 publishDate: 2025-06-08
-image: "assets/image-27.png"
+heroImage: {src: "assets/image-27.png"}
 description: "跟队友合力AK了Crypto、Misc、Pwn和Forensics，最终成功拿下rank #1"
 ---
 

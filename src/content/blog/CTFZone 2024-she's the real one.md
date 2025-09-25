@@ -2,7 +2,6 @@
 title: CTFZone 2024-she's the real one
 publishDate: 2024-08-12
 description: 'CTFZone好难好难...肝了一天也只不过拿下这一道题。'
-image: ''
 tags: ["CTF", "Crypto", "Lattice", "ECC"]
 category: 'Writeups'
 draft: false 

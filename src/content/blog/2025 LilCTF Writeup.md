@@ -2,7 +2,7 @@
 title: 2025 LilCTF Writeup
 publishDate: 2025-08-17
 description: '虽然周末大部分时间在SekaiCTF坐牢，不过还是抽了几个小时看看牢然的比赛'
-image: 'https://pic.swizzer.cc/2025/08/8cdc1e7b12486e670735b9a8bf2f29fb.png'
+heroImage: { src: 'https://pic.swizzer.cc/2025/08/8cdc1e7b12486e670735b9a8bf2f29fb.png', inferSize: true}
 tags: ["CTF", "Misc", "Crypto", "Lattice", "线性代数"]
 category: 'Writeups'
 draft: false 
