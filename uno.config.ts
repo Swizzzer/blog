@@ -35,25 +35,30 @@ const typographyConfig = {
     blockquote: {
       position: 'relative',
       overflow: 'hidden',
-      'border-width': '1px',
-      'border-left': 'inherit',
-      'border-radius': 'var(--radius)',
+      border: 'none',
+      'border-radius': '0',
+      'border-inline-start': '3px solid hsl(var(--primary) / 1)',
       'padding-inline': '1.6rem',
-      'box-shadow': '0 5px 0 ' + bgMuted,
+      'padding-inline-start': '1.8rem',
+      color: 'hsl(var(--foreground) / 0.92)',
+      // 'box-shadow': '0 5px 0 ' + bgMuted,
       ...(typographyCustom.blockquoteStyle === 'normal' && { 'font-style': 'normal' })
     },
-    'blockquote::after': {
-      color: fgMuted,
-      position: 'absolute',
-      content: '"”"',
-      top: '2.6rem',
-      right: '-1.4rem',
-      'font-size': '10rem',
-      'font-family':
-        '"Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif',
-      transform: 'rotate(-15deg)',
-      opacity: '0.1'
+    'blockquote p': {
+      color: 'hsl(var(--foreground) / 0.92)'
     },
+    // 'blockquote::after': {
+    //   color: fgMuted,
+    //   position: 'absolute',
+    //   content: '"”"',
+    //   top: '2.6rem',
+    //   right: '-1.4rem',
+    //   'font-size': '10rem',
+    //   'font-family':
+    //     '"Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif',
+    //   transform: 'rotate(-15deg)',
+    //   opacity: '0.1'
+    // },
     // Table
     table: {
       display: 'block',

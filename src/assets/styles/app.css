@@ -50,7 +50,7 @@ html {
   --background-clouds: radial-gradient(130% 100% at 14% 20%, hsla(202 74% 68% / 0.55) 0%, hsla(202 72% 70% / 0.12) 42%, transparent 78%),
     radial-gradient(140% 120% at 84% 12%, hsla(326 82% 82% / 0.48) 0%, hsla(326 78% 80% / 0.12) 36%, transparent 72%),
     radial-gradient(210% 200% at 52% 116%, hsla(46 98% 82% / 0.42) 0%, hsla(46 95% 82% / 0.1) 50%, transparent 82%);
-  --background-clouds-opacity: 0.48;
+  --background-clouds-opacity: 0.24;
   --background-noise-opacity: 0.085;
   --ripple-ring-color: hsla(var(--primary) / 0.3);
   --ripple-ring-glow: hsla(var(--primary) / 0.15);
