@@ -5,12 +5,14 @@
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: 'Satoshi';
   src: url('/fonts/Satoshi-VariableItalic.ttf') format('truetype');
   font-style: italic;
   font-display: swap;
 }
+
 html {
   font-family: 'Satoshi', sans-serif;
 }
@@ -40,6 +42,7 @@ html {
   --ripple-ring-color: hsla(var(--primary) / 0.3);
   --ripple-ring-glow: hsla(var(--primary) / 0.15);
 }
+
 .dark {
   --background: 240 16% 1.8%;
   --foreground: 0 0% 98%;
@@ -60,16 +63,14 @@ html {
   --border: 240 3.7% 19.9%;
   --input: 240 3.7% 15.9%;
   --ring: 240 4.9% 83.9%;
-  --background-gradient: linear-gradient(
-    180deg,
-    hsl(220 18% 5.2%) 0%,
-    hsl(220 17% 4%) 18%,
-    hsl(220 16% 3%) 36%,
-    hsl(220 15% 2.4%) 54%,
-    hsl(220 14% 2%) 72%,
-    hsl(220 13% 1.8%) 90%,
-    hsl(220 12% 1.6%) 100%
-  );
+  --background-gradient: linear-gradient(180deg,
+      hsl(220 18% 5.2%) 0%,
+      hsl(220 17% 4%) 18%,
+      hsl(220 16% 3%) 36%,
+      hsl(220 15% 2.4%) 54%,
+      hsl(220 14% 2%) 72%,
+      hsl(220 13% 1.8%) 90%,
+      hsl(220 12% 1.6%) 100%);
   --background-clouds: radial-gradient(140% 120% at 16% 22%, hsla(210 62% 42% / 0.3) 0%, hsla(210 56% 34% / 0.08) 44%, transparent 78%),
     radial-gradient(160% 140% at 86% -6%, hsla(260 56% 38% / 0.26) 0%, hsla(260 50% 30% / 0.08) 38%, transparent 74%),
     radial-gradient(220% 220% at 52% 126%, hsla(28 68% 32% / 0.22) 0%, hsla(28 58% 26% / 0.08) 55%, transparent 84%);
@@ -77,48 +78,82 @@ html {
   --background-noise-opacity: 0.08;
   --ripple-ring-color: hsla(var(--primary) / 0.45);
   --ripple-ring-glow: hsla(var(--primary) / 0.25);
+
+  body {
+    min-height: 100dvh;
+    background-color: hsl(var(--background));
+    background-image: var(--background-gradient), var(--background-dither);
+    background-attachment: fixed;
+    background-size: 120% 120%;
+    background-position: center top;
+    color: hsl(var(--foreground));
+    position: relative;
+    overflow-x: hidden;
+    isolation: isolate;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><filter id="n" x="0" y="0"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="3" stitchTiles="stitch"/></filter><rect width="60" height="60" filter="url(%23n)" opacity="0.4"/></svg>');
+    mix-blend-mode: soft-light;
+    opacity: var(--background-noise-opacity);
+    z-index: 1;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: -18%;
+    pointer-events: none;
+    background-image: var(--background-clouds);
+    background-size: 115% 115%;
+    background-repeat: no-repeat;
+    opacity: var(--background-clouds-opacity);
+    filter: blur(60px);
+    transform: translate3d(0, 0, 0);
+    z-index: 0;
+  }
 }
+
 :root {
-  --background-dither: repeating-linear-gradient(
-    135deg,
-    hsla(var(--background) / 0.018) 0 1px,
-    transparent 0 3px
-  );
+  --background-dither: repeating-linear-gradient(135deg,
+      hsla(var(--background) / 0.018) 0 1px,
+      transparent 0 3px);
 }
+
 .dark {
-  --background-dither: repeating-linear-gradient(
-    135deg,
-    hsla(var(--foreground) / 0.01) 0 1px,
-    transparent 0 3px
-  );
+  --background-dither: repeating-linear-gradient(135deg,
+      hsla(var(--foreground) / 0.01) 0 1px,
+      transparent 0 3px);
 }
 
 @supports (background: linear-gradient(in oklab, red, blue)) {
   :root {
-    --background-gradient: linear-gradient(
-      in oklch 180deg,
-      oklch(0.985 0.01 235) 0%,
-      oklch(0.968 0.012 233) 22%,
-      oklch(0.946 0.013 231) 46%,
-      oklch(0.922 0.012 228) 70%,
-      oklch(0.904 0.011 224) 100%
-    );
+    --background-gradient: linear-gradient(in oklch 180deg,
+        oklch(0.985 0.01 235) 0%,
+        oklch(0.968 0.012 233) 22%,
+        oklch(0.946 0.013 231) 46%,
+        oklch(0.922 0.012 228) 70%,
+        oklch(0.904 0.011 224) 100%);
   }
 
   .dark {
-    --background-gradient: linear-gradient(
-      in oklch 180deg,
-      oklch(0.29 0.024 246) 0%,
-      oklch(0.26 0.022 249) 26%,
-      oklch(0.24 0.02 253) 52%,
-      oklch(0.22 0.018 256) 78%,
-      oklch(0.2 0.016 260) 100%
-    );
+    --background-gradient: linear-gradient(in oklch 180deg,
+        oklch(0.29 0.024 246) 0%,
+        oklch(0.26 0.022 249) 26%,
+        oklch(0.24 0.02 253) 52%,
+        oklch(0.22 0.018 256) 78%,
+        oklch(0.2 0.016 260) 100%);
   }
 }
+
 :root {
   --un-default-border-color: hsl(var(--border) / 1);
 }
+
 html.dark {
   color-scheme: dark;
 }
@@ -126,48 +161,13 @@ html.dark {
 /* Global */
 a {
   transition: color 0.2s ease;
+
   &:hover {
     color: hsl(var(--primary) / var(--un-text-opacity, 1));
   }
 }
 
-body {
-  min-height: 100dvh;
-  background-color: hsl(var(--background));
-  background-image: var(--background-gradient), var(--background-dither);
-  background-attachment: fixed;
-  background-size: 120% 120%;
-  background-position: center top;
-  color: hsl(var(--foreground));
-  position: relative;
-  overflow-x: hidden;
-  isolation: isolate;
-}
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><filter id="n" x="0" y="0"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="3" stitchTiles="stitch"/></filter><rect width="60" height="60" filter="url(%23n)" opacity="0.4"/></svg>');
-  mix-blend-mode: soft-light;
-  opacity: var(--background-noise-opacity);
-  z-index: 1;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: -18%;
-  pointer-events: none;
-  background-image: var(--background-clouds);
-  background-size: 115% 115%;
-  background-repeat: no-repeat;
-  opacity: var(--background-clouds-opacity);
-  filter: blur(60px);
-  transform: translate3d(0, 0, 0);
-  z-index: 0;
-}
 
 #ripple-layer {
   position: fixed;
@@ -194,18 +194,16 @@ body::after {
   box-shadow: 0 0 1.5rem -0.35rem var(--ripple-ring-glow);
   mix-blend-mode: normal;
   opacity: 0;
-    --background-gradient: linear-gradient(
-      180deg,
+  --background-gradient: linear-gradient(180deg,
       hsl(210 42% 98%) 0%,
       hsl(210 38% 97%) 38%,
       hsl(210 34% 96%) 70%,
-      hsl(210 30% 95%) 100%
-    );
-    --background-clouds: radial-gradient(130% 100% at 14% 20%, hsla(202 74% 68% / 0.55) 0%, hsla(202 72% 70% / 0.12) 42%, transparent 78%),
-      radial-gradient(140% 120% at 84% 12%, hsla(326 82% 82% / 0.48) 0%, hsla(326 78% 80% / 0.12) 36%, transparent 72%),
-      radial-gradient(210% 200% at 52% 116%, hsla(46 98% 82% / 0.42) 0%, hsla(46 95% 82% / 0.1) 50%, transparent 82%);
-    --background-clouds-opacity: 0.64;
-    --background-noise-opacity: 0.07;
+      hsl(210 30% 95%) 100%);
+  --background-clouds: radial-gradient(130% 100% at 14% 20%, hsla(202 74% 68% / 0.55) 0%, hsla(202 72% 70% / 0.12) 42%, transparent 78%),
+    radial-gradient(140% 120% at 84% 12%, hsla(326 82% 82% / 0.48) 0%, hsla(326 78% 80% / 0.12) 36%, transparent 72%),
+    radial-gradient(210% 200% at 52% 116%, hsla(46 98% 82% / 0.42) 0%, hsla(46 95% 82% / 0.1) 50%, transparent 82%);
+  --background-clouds-opacity: 0.64;
+  --background-noise-opacity: 0.07;
   border-color: color-mix(in srgb, var(--ripple-ring-color) 75%, transparent);
 }
 
