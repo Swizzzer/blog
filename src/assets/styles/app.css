@@ -39,8 +39,8 @@ html {
   --input: 240 5.9% 90%;
   --ring: 240 5.9% 10%;
   --radius: 0.5rem;
-  --ripple-ring-color: hsla(var(--primary) / 0.3);
-  --ripple-ring-glow: hsla(var(--primary) / 0.15);
+  --ripple-ring-color: hsla(var(--primary) / 0.6);
+  --ripple-ring-glow: hsla(var(--primary) / 0.25);
 }
 
 .dark {
