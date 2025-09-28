@@ -37,6 +37,20 @@ html {
   --input: 240 5.9% 90%;
   --ring: 240 5.9% 10%;
   --radius: 0.5rem;
+  --background-gradient: linear-gradient(
+    180deg,
+    hsl(210 42% 98%) 0%,
+    hsl(210 38% 97%) 38%,
+    hsl(210 34% 96%) 70%,
+    hsl(210 30% 95%) 100%
+  );
+  --background-clouds: radial-gradient(130% 100% at 14% 20%, hsla(202 74% 68% / 0.55) 0%, hsla(202 72% 70% / 0.12) 42%, transparent 78%),
+    radial-gradient(140% 120% at 84% 12%, hsla(326 82% 82% / 0.48) 0%, hsla(326 78% 80% / 0.12) 36%, transparent 72%),
+    radial-gradient(210% 200% at 52% 116%, hsla(46 98% 82% / 0.42) 0%, hsla(46 95% 82% / 0.1) 50%, transparent 82%);
+  --background-clouds-opacity: 0.64;
+  --background-noise-opacity: 0.07;
+  --ripple-ring-color: hsla(var(--primary) / 0.3);
+  --ripple-ring-glow: hsla(var(--primary) / 0.15);
 }
 .dark {
   --background: 240 20.54% 5.2%;
@@ -58,6 +72,20 @@ html {
   --border: 240 3.7% 19.9%;
   --input: 240 3.7% 15.9%;
   --ring: 240 4.9% 83.9%;
+  --background-gradient: linear-gradient(
+    180deg,
+    hsl(220 28% 10%) 0%,
+    hsl(220 26% 9%) 34%,
+    hsl(220 24% 8%) 68%,
+    hsl(220 22% 7%) 100%
+  );
+  --background-clouds: radial-gradient(140% 120% at 16% 22%, hsla(210 72% 58% / 0.42) 0%, hsla(210 65% 52% / 0.1) 44%, transparent 78%),
+    radial-gradient(160% 140% at 86% -6%, hsla(260 78% 64% / 0.38) 0%, hsla(260 65% 50% / 0.1) 38%, transparent 74%),
+    radial-gradient(220% 220% at 52% 126%, hsla(28 92% 58% / 0.32) 0%, hsla(28 85% 52% / 0.1) 55%, transparent 84%);
+  --background-clouds-opacity: 0.6;
+  --background-noise-opacity: 0.08;
+  --ripple-ring-color: hsla(var(--primary) / 0.45);
+  --ripple-ring-glow: hsla(var(--primary) / 0.25);
 }
 :root {
   --un-default-border-color: hsl(var(--border) / 1);
@@ -72,4 +100,91 @@ a {
   &:hover {
     color: hsl(var(--primary) / var(--un-text-opacity, 1));
   }
+}
+
+body {
+  min-height: 100dvh;
+  background-color: hsl(var(--background));
+  background-image: var(--background-gradient);
+  background-attachment: fixed;
+  background-size: 120% 120%;
+  background-position: center top;
+  color: hsl(var(--foreground));
+  position: relative;
+  overflow-x: hidden;
+  isolation: isolate;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><filter id="n" x="0" y="0"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="3" stitchTiles="stitch"/></filter><rect width="60" height="60" filter="url(%23n)" opacity="0.4"/></svg>');
+  mix-blend-mode: soft-light;
+  opacity: var(--background-noise-opacity);
+  z-index: 1;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: -18%;
+  pointer-events: none;
+  background-image: var(--background-clouds);
+  background-size: 115% 115%;
+  background-repeat: no-repeat;
+  opacity: var(--background-clouds-opacity);
+  filter: blur(60px);
+  transform: translate3d(0, 0, 0);
+  z-index: 0;
+}
+
+#ripple-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  overflow: hidden;
+}
+
+.click-ripple {
+  position: absolute;
+  width: var(--ripple-size, 36rem);
+  height: var(--ripple-size, 36rem);
+  left: calc(var(--ripple-x) - var(--ripple-size, 36rem) / 2);
+  top: calc(var(--ripple-y) - var(--ripple-size, 36rem) / 2);
+  pointer-events: none;
+}
+
+.click-ripple__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 1.5px solid var(--ripple-ring-color);
+  box-shadow: 0 0 1.5rem -0.35rem var(--ripple-ring-glow);
+  mix-blend-mode: normal;
+  opacity: 0;
+    --background-gradient: linear-gradient(
+      180deg,
+      hsl(210 42% 98%) 0%,
+      hsl(210 38% 97%) 38%,
+      hsl(210 34% 96%) 70%,
+      hsl(210 30% 95%) 100%
+    );
+    --background-clouds: radial-gradient(130% 100% at 14% 20%, hsla(202 74% 68% / 0.55) 0%, hsla(202 72% 70% / 0.12) 42%, transparent 78%),
+      radial-gradient(140% 120% at 84% 12%, hsla(326 82% 82% / 0.48) 0%, hsla(326 78% 80% / 0.12) 36%, transparent 72%),
+      radial-gradient(210% 200% at 52% 116%, hsla(46 98% 82% / 0.42) 0%, hsla(46 95% 82% / 0.1) 50%, transparent 82%);
+    --background-clouds-opacity: 0.64;
+    --background-noise-opacity: 0.07;
+  border-color: color-mix(in srgb, var(--ripple-ring-color) 75%, transparent);
+}
+
+.click-ripple__ring:nth-child(3) {
+  border-color: color-mix(in srgb, var(--ripple-ring-color) 55%, transparent);
+}
+
+.dark .click-ripple__ring {
+  border-color: var(--ripple-ring-color);
+  mix-blend-mode: screen;
 }

@@ -3,6 +3,7 @@ import { Footer, Header, ThemeProvider } from 'astro-pure/components/basic'
 import type { SiteMeta } from 'astro-pure/types'
 import BaseHead from '@/components/BaseHead.astro'
 import config from '@/site-config'
+import layoutEffectsSrc from '@/assets/scripts/layout-effects.ts?url'
 
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseLayout /> component.
@@ -36,6 +37,7 @@ const {
         />
       )
     }
+    <div id='ripple-layer' aria-hidden='true'></div>
     <div class='w-full max-w-[70rem] px-4 sm:px-7 lg:px-10 min-h-[100dvh] flex flex-col justify-between'>
       <Header />
       <div class='flex-1 w-full'>
@@ -56,5 +58,6 @@ const {
         ) !important;
       }
     </style>
+    <script is:inline type='module' src={layoutEffectsSrc}></script>
   </body>
 </html>

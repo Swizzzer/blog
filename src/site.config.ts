@@ -1,5 +1,4 @@
 import type {
-	CardListData,
 	Config,
 	IntegrationUserConfig,
 	ThemeUserConfig,

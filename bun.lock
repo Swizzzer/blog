@@ -9,6 +9,7 @@
         "@astrojs/vercel": "^8.2.2",
         "@playform/compress": "^0.2.0",
         "@waline/client": "^3.6.0",
+        "animejs": "^4.1.4",
         "astro": "^5.12.0",
         "astro-pure": "./packages/pure",
         "katex": "^0.16.22",
@@ -532,6 +533,8 @@
     "agent-base": ["agent-base@7.1.4", "https://registry.npmmirror.com/agent-base/-/agent-base-7.1.4.tgz", {}, "sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ=="],
 
     "ajv": ["ajv@6.12.6", "https://registry.npmmirror.com/ajv/-/ajv-6.12.6.tgz", { "dependencies": { "fast-deep-equal": "^3.1.1", "fast-json-stable-stringify": "^2.0.0", "json-schema-traverse": "^0.4.1", "uri-js": "^4.2.2" } }, "sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g=="],
+
+    "animejs": ["animejs@4.1.4", "", {}, "sha512-BdnlkOx959ehvD56Gog6qafRIn6U1gOS5ZNNGK/QHbCv3Ha09IDarplQJbujavki0uT4moeP5RagtoPplhvPAQ=="],
 
     "ansi-align": ["ansi-align@3.0.1", "https://registry.npmmirror.com/ansi-align/-/ansi-align-3.0.1.tgz", { "dependencies": { "string-width": "^4.1.0" } }, "sha512-IOfwwBF5iczOjp/WeY4YxyjqAFMQoZufdQWDd19SEExbVLNXqvpzSJ/M7Za4/sCPmQ0+GRquoA7bGcINcxew6w=="],
 
