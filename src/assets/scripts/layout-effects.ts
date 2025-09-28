@@ -2,6 +2,8 @@ import { animate } from 'animejs'
 
 type Nullable<T> = T | null
 
+let hasInitialized = false
+
 const initRipple = () => {
   const rippleLayer = document.getElementById('ripple-layer') as Nullable<HTMLDivElement>
   if (!rippleLayer) return
@@ -53,11 +55,19 @@ const initRipple = () => {
 }
 
 const run = () => {
+  if (hasInitialized) return
+  hasInitialized = true
   initRipple()
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', run, { once: true })
-} else {
-  run()
+export const initLayoutEffects = () => {
+  if (typeof window === 'undefined') return
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run, { once: true })
+  } else {
+    run()
+  }
 }
+
+initLayoutEffects()

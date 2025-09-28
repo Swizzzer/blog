@@ -3,7 +3,6 @@ import { Footer, Header, ThemeProvider } from 'astro-pure/components/basic'
 import type { SiteMeta } from 'astro-pure/types'
 import BaseHead from '@/components/BaseHead.astro'
 import config from '@/site-config'
-import layoutEffectsSrc from '@/assets/scripts/layout-effects.ts?url'
 
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseLayout /> component.
@@ -58,6 +57,6 @@ const {
         ) !important;
       }
     </style>
-    <script is:inline type='module' src={layoutEffectsSrc}></script>
+    <script>import '../assets/scripts/layout-effects.ts'</script>
   </body>
 </html>
