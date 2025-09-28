@@ -6,7 +6,6 @@ const typographyCustom = integ.typography || {}
 
 const fg = 'hsl(var(--foreground) / var(--un-text-opacity, 1))'
 const fgMuted = 'hsl(var(--muted-foreground) / var(--un-text-opacity, 1))'
-const bgMuted = 'hsl(var(--muted) / var(--un-bg-opacity, 1))'
 
 const typographyConfig = {
   cssExtend: {
