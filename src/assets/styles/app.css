@@ -64,16 +64,17 @@ html {
     180deg,
     hsl(220 18% 5.2%) 0%,
     hsl(220 17% 4%) 18%,
-    hsl(220 16% 3%) 38%,
-    hsl(220 15% 2.4%) 58%,
-    hsl(220 14% 2%) 78%,
-    hsl(220 13% 1.6%) 100%
+    hsl(220 16% 3%) 36%,
+    hsl(220 15% 2.4%) 54%,
+    hsl(220 14% 2%) 72%,
+    hsl(220 13% 1.8%) 90%,
+    hsl(220 12% 1.6%) 100%
   );
   --background-clouds: radial-gradient(140% 120% at 16% 22%, hsla(210 62% 42% / 0.3) 0%, hsla(210 56% 34% / 0.08) 44%, transparent 78%),
     radial-gradient(160% 140% at 86% -6%, hsla(260 56% 38% / 0.26) 0%, hsla(260 50% 30% / 0.08) 38%, transparent 74%),
     radial-gradient(220% 220% at 52% 126%, hsla(28 68% 32% / 0.22) 0%, hsla(28 58% 26% / 0.08) 55%, transparent 84%);
-  --background-clouds-opacity: 0.38;
-  --background-noise-opacity: 0.14;
+  --background-clouds-opacity: 0.08;
+  --background-noise-opacity: 0.08;
   --ripple-ring-color: hsla(var(--primary) / 0.45);
   --ripple-ring-glow: hsla(var(--primary) / 0.25);
 }
