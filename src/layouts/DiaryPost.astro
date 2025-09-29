@@ -1,5 +1,8 @@
 ---
 import type { MarkdownHeading } from 'astro'
+
+import 'katex/dist/katex.min.css'
+
 import { MediumZoom } from 'astro-pure/advanced'
 import { TOC } from 'astro-pure/components/pages'
 import { FormattedDate, Icon } from 'astro-pure/user'
@@ -92,55 +95,6 @@ const socialImage = '/images/social-card.png'
     <slot />
   </div>
 
-  <!-- Navigation to previous/next diary -->
-  <Fragment slot='bottom'>
-    <div class='mt-8 border-t pt-6'>
-      <div class='flex justify-between items-center'>
-        {(() => {
-          const currentIndex = diaries.findIndex(d => d.id === id)
-          const prevDiary = diaries[currentIndex + 1] // Older diary (next in array since sorted by newest first)
-          const nextDiary = diaries[currentIndex - 1] // Newer diary (prev in array)
-          
-          return (
-            <>
-              <div class='flex-1'>
-                {prevDiary && (
-                  <a 
-                    href={`/diary/${prevDiary.id}`} 
-                    class='group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors'
-                  >
-                    <span class='text-lg'>←</span>
-                    <div class='flex flex-col'>
-                      <span class='text-xs'>上一篇</span>
-                      <span class='font-medium'>{prevDiary.data.title}</span>
-                    </div>
-                  </a>
-                )}
-              </div>
-              
-              <div class='flex-1 text-right'>
-                {nextDiary && (
-                  <a 
-                    href={`/diary/${nextDiary.id}`} 
-                    class='group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors'
-                  >
-                    <div class='flex flex-col'>
-                      <span class='text-xs'>下一篇</span>
-                      <span class='font-medium'>{nextDiary.data.title}</span>
-                    </div>
-                    <span class='text-lg'>→</span>
-                  </a>
-                )}
-              </div>
-            </>
-          )
-        })()}
-      </div>
-    </div>
-
-    <!-- Comments -->
-    {!isDraft && <Comment class='mt-8' />}
-  </Fragment>
 </PageLayout>
 
 {integ.mediumZoom.enable && <MediumZoom />}
