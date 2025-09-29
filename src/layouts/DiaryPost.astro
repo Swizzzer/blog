@@ -4,7 +4,7 @@ import { MediumZoom } from 'astro-pure/advanced'
 import { TOC } from 'astro-pure/components/pages'
 import { FormattedDate, Icon } from 'astro-pure/user'
 import PageLayout from '@/layouts/ContentLayout.astro'
-import { Comment, PageInfo } from '@/components/waline'
+import { PageInfo } from '@/components/waline'
 import { integ } from '@/site-config'
 
 interface Props {
@@ -14,8 +14,7 @@ interface Props {
 }
 
 const {
-  diary: { id, data },
-  diaries,
+  diary: { data },
   headings
 } = Astro.props
 
