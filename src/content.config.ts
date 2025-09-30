@@ -14,42 +14,30 @@ const blog = defineCollection({
   loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
   // Required
   schema: ({ image }) =>
-    z
-      .object({
-        // Required
-        title: z.string().max(60),
-        description: z.string().max(160),
-        publishDate: z.coerce.date(),
-        // Optional
-        updatedDate: z.coerce.date().optional(),
-        heroImage: z
-          .object({
-            src: image(),
-            alt: z.string().optional(),
-            inferSize: z.boolean().optional(),
-            width: z.number().optional(),
-            height: z.number().optional(),
+    z.object({
+      // Required
+      title: z.string().max(60),
+      description: z.string().max(160),
+      publishDate: z.coerce.date(),
+      // Optional
+      updatedDate: z.coerce.date().optional(),
+      heroImage: z
+        .object({
+          src: image(),
+          alt: z.string().optional(),
+          inferSize: z.boolean().optional(),
+          width: z.number().optional(),
+          height: z.number().optional(),
 
-            color: z.string().optional()
-          })
-          .optional(),
-        tags: z.array(z.string()).default([]).transform(removeDupsAndLowerCase),
-        language: z.string().optional(),
-        draft: z.boolean().default(false),
-        encrypted: z.boolean().default(false),
-        password: z.string().min(1).optional(),
-        // Special fields
-        comment: z.boolean().default(true)
-      })
-      .superRefine((value, ctx) => {
-        if (value.encrypted && !value.password) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Encrypted posts require a password.',
-            path: ['password']
-          })
-        }
-      })
+          color: z.string().optional()
+        })
+        .optional(),
+      tags: z.array(z.string()).default([]).transform(removeDupsAndLowerCase),
+      language: z.string().optional(),
+      draft: z.boolean().default(false),
+      // Special fields
+      comment: z.boolean().default(true)
+    })
 })
 
 // Define diary collection

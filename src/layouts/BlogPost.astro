@@ -2,8 +2,6 @@
 import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 
-import bcrypt from 'bcryptjs'
-import CryptoJS from 'crypto-js'
 // Plugin styles
 import { MediumZoom } from 'astro-pure/advanced'
 import { ArticleBottom, Copyright, Hero, TOC } from 'astro-pure/components/pages'
@@ -17,39 +15,13 @@ interface Props {
   headings: MarkdownHeading[]
   remarkPluginFrontmatter: Record<string, unknown>
 }
+
 const {
-  post: { id, data: rawData },
+  post: { id, data },
   posts,
   headings,
   remarkPluginFrontmatter
 } = Astro.props
-
-const isEncryptedPost = Boolean(rawData.encrypted)
-const password = rawData.password
-
-if (isEncryptedPost && (typeof password !== 'string' || password.length === 0)) {
-  throw new Error(`Encrypted post "${rawData.title}" requires a non-empty password.`)
-}
-
-const sanitizedData = isEncryptedPost ? { ...rawData, password: undefined } : rawData
-const renderedContent = await Astro.slots.render('default')
-
-const encryptedPayload = isEncryptedPost
-  ? {
-      ciphertext: CryptoJS.AES.encrypt(renderedContent, password as string).toString(),
-      passwordHash: bcrypt.hashSync(password as string, 10)
-    }
-  : undefined
-const encryptedPayloadJson = encryptedPayload
-  ? JSON.stringify(encryptedPayload).replace(/</g, '\u003C')
-  : undefined
-
-if (isEncryptedPost && !encryptedPayloadJson) {
-  throw new Error(`Failed to generate encrypted payload for post "${rawData.title}".`)
-}
-
-const safeHeadings = isEncryptedPost ? [] : headings
-const astroWithResolve = Astro as unknown as { resolve?: (path: string) => string }
 
 const {
   description,
@@ -59,7 +31,7 @@ const {
   updatedDate,
   draft: isDraft,
   comment: enableComment
-} = sanitizedData
+} = data
 
 const socialImage = heroImage
   ? typeof heroImage.src === 'string'
@@ -67,7 +39,7 @@ const socialImage = heroImage
     : heroImage.src.src
   : '/images/social-card.png'
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString()
-const primaryColor = heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opacity))'
+const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opacity))'
 ---
 
 <PageLayout
@@ -75,66 +47,19 @@ const primaryColor = heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opa
   highlightColor={primaryColor}
   back='/blog'
 >
-  {!!safeHeadings.length && <TOC headings={safeHeadings} slot='sidebar' />}
+  {!!headings.length && <TOC {headings} slot='sidebar' />}
 
-  <Hero data={sanitizedData} {remarkPluginFrontmatter} slot='header'>
+  <Hero {data} {remarkPluginFrontmatter} slot='header'>
     <Fragment slot='description'>
       {!isDraft && enableComment && <PageInfo comment class='mt-1' />}
     </Fragment>
   </Hero>
 
-  {
-    isEncryptedPost ? (
-      <section
-        class='mt-8 space-y-4 rounded-2xl border border-border bg-card px-6 py-6 shadow-sm'
-        data-encrypted-post
-        data-state='locked'
-      >
-        <div class='space-y-2 text-sm text-muted-foreground'>
-          <h2 class='text-lg font-medium text-foreground'>文章已加密</h2>
-          <p class='leading-relaxed'>
-            本文内容已在构建时进行加密处理。请输入访问密码，密码仅会在您的浏览器中用于本次解密。
-          </p>
-        </div>
-        <form class='flex flex-col gap-3 sm:flex-row' data-role='unlock-form'>
-          <label class='flex-1 sm:max-w-xs'>
-            <span class='sr-only'>文章密码</span>
-            <input
-              autocomplete='current-password'
-              class='w-full rounded-xl border border-border bg-background px-4 py-2 text-base text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20'
-              data-role='password-input'
-              placeholder='输入密码'
-              required
-              type='password'
-            />
-          </label>
-          <button
-            class='inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:-translate-y-0.5 hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
-            data-role='unlock-button'
-            type='submit'
-          >
-            解锁
-          </button>
-        </form>
-        <p class='min-h-[1.5rem] text-sm text-destructive' data-role='unlock-error' hidden></p>
-        <div class='hidden max-w-none prose' data-role='unlock-content'></div>
-        {encryptedPayloadJson && (
-          <script
-            is:inline
-            type='application/json'
-            data-encrypted-payload
-            set:html={encryptedPayloadJson}
-          ></script>
-        )}
-      </section>
-    ) : (
-      <Fragment set:html={renderedContent} />
-    )
-  }
+  <slot />
 
   <Fragment slot='bottom'>
     {/* Copyright */}
-    <Copyright data={sanitizedData} />
+    <Copyright {data} />
     {/* Article recommend */}
     <ArticleBottom collections={posts} {id} class='mt-3 sm:mt-6' />
     {/* Comment */}
@@ -145,5 +70,3 @@ const primaryColor = heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opa
 </PageLayout>
 
 {integ.mediumZoom.enable && <MediumZoom />}
-
-{isEncryptedPost && <script>import '../assets/scripts/blog-encryption.ts'</script>}
