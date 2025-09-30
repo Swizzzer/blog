@@ -26,8 +26,6 @@
     "animejs": "^4.1.4",
     "astro": "^5.12.0",
     "astro-pure": "./packages/pure",
-    "bcryptjs": "^3.0.2",
-    "crypto-js": "^4.2.0",
     "katex": "^0.16.22",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
