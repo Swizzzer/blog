@@ -618,10 +618,13 @@ if __name__ == "__main__":
 ![c97b13e365d02959d782346e99ebb85c.png](https://pic.swizzer.cc/2025/10/c97b13e365d02959d782346e99ebb85c.png)
 
 这题的思想来自[smileyCTF 2025-Project Holoswap](https://blog.swizzer.cc/blog/2025-smileyctf-writeup/#project-holoswap)，也就是在l2 norm上执行PGD Attack。
-不过比起`Project Holoswap`需要让模型误分类到指定类别，本题只需要让模型判定为非目标类别即可，所以难度会稍微低一点。<Spoiler>在PGD Attack面前似乎也没低多少</Spoiler>
+不过比起`Project Holoswap`需要让模型误分类到指定类别，本题只需要让模型判定为非目标类别即可，所以难度会稍微低一点。
+<Spoiler>在PGD Attack面前似乎也没低多少</Spoiler>
 
 为了避免出现去年Lilac 405杯那种“手动修改几个像素就能通过模型验证”的情况，这次基于EfficientNetV2架构训练了一个稍大点的模型(这也导致这题因为太吃资源而无法部署到平台，不得不在@Cherrling和我的机子上各部署了一份以减轻后端压力)，
 并且把l2 norm的阈值调得比较严格。不过只要肯稍微调调步长+写个早停策略，还是能比较容易地打通的。
+
+> 训练用数据集来自[CyberHarem/yoroizuka_mizore_soundeuphonium](https://huggingface.co/datasets/CyberHarem/yoroizuka_mizore_soundeuphonium)，并人工去除了一些看不到霙的正脸的图片。感谢ta的用心制作。
 
 <Tabs>
 <TabItem label="attack.py">
@@ -649,7 +652,6 @@ STEPS = 500
 STEP_SIZE = 0.0000035
 THRESH = 0.5
 
-# 设备
 if torch.backends.mps.is_available():
   DEVICE = torch.device("mps")
 elif torch.cuda.is_available():
