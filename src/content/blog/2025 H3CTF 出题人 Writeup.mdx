@@ -267,8 +267,8 @@ print(list(res.transpose()[0]))
 抄袭的[zer0pts CTF 2022-Karen](https://blog.maple3142.net/2022/03/20/zer0pts-ctf-2022-writeups/#karen)，只改了改矩阵转置和随机矩阵的大小。
 完全是原版HSSP，直接打正交格就行。
 
-具体来说，我们知道$A*x\equiv{0}\pmod{p}$，所以如果我们找到$M$满足$MA\vec{x}=\vec{x}^TA^TM^T\equiv{0}\pmod{p}$，那么$A$就在$M$的左核空间中；
-而A的向量又都很短，所以对$M$的左核空间作格规约就可以期望找到这些短向量，从而恢复出flag。
+具体来说，我们知道$A*x\equiv{0}\pmod{p}$，所以如果我们找到$M$满足$MA\vec{x}=\vec{x}^TA^TM^T\equiv{0}\pmod{p}$，那么$A^T$就在$M^T$的左核空间中；
+而$A^T$的向量又都很短，所以对$M^T$的左核空间作格规约就可以期望找到这些短向量，从而恢复出flag。
 
 而在$\bmod{p}$下找到这样的$M$的方法也是格，构造方案请参考`solve.py`。
 <Tabs>
