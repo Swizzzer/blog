@@ -229,121 +229,13 @@ for res, _ in f_real.roots():
 </TabItem>
 </Tabs>
 
+> 这题的裁剪版扔给了QnQSec CTF用，一题两吃了属于是<Spoiler>所以我的劳务费在哪里</Spoiler>
+
 ### SSS???
 
-<Tabs>
-<TabItem label="chall.py">
-```python
-from random import SystemRandom
-from Crypto.Util.number import getPrime, isPrime, bytes_to_long
+包含3个关卡的题目，都是给出多项式的根然后要求恢复一些系数，类似Shamir Secret Sharing，所以叫`SSS???`。
 
-random = SystemRandom()
-
-
-class Polynomial:
-  def __init__(self, p: int, deg: int):
-    self.p = p
-    self.deg = deg
-    self.coeffs = [random.randint(0, p) for _ in range(self.deg + 1)]
-
-  def evaluate(self, x: int) -> int:
-    result = 0
-    for coeff in reversed(self.coeffs):
-      result = (result * x + coeff) % self.p
-    return result
-
-  def get_coeffs(self) -> list[int]:
-    return self.coeffs
-
-  def set_coeff(self, idx: int, value: int):
-    self.coeffs[idx] = value % self.p
-
-
-def level1():
-  p = 2 * getPrime(512)
-  f = Polynomial(p, random.randint(8, 16))
-  secret = f.get_coeffs()[0]
-  print(f"[*] p: {p}")
-
-  x = int(input("gimme your x > "))
-  assert 0 < x < p, "😡No cheating!"
-
-  print(f"[*] share: {f.evaluate(x)}")
-  guess = int(input("🔐 > "))
-  assert guess == secret, "😎Try harder~"
-
-  flag = open("flag1.txt", "r").read().strip()
-  print("🥳🥳🥳")
-  print(f"[+] Here's level1's flag: {flag}")
-
-
-def level2():
-  p = int(input("gimme your p > "))
-  assert isPrime(p) and p.bit_length() > 128, "😡No cheating!"
-  f = Polynomial(p, 16)
-
-  for _ in range(10):
-    x = int(input("gimme your x > "))
-    assert 0 < x < p, "😡No cheating!"
-    print(f"[*] share: {f.evaluate(x)}")
-
-  idx, guess = map(int, input("🔐 > ").split(","))
-  secret = f.get_coeffs()[idx]
-  assert guess == secret, "😎Try harder~"
-
-  flag = open("flag2.txt", "r").read().strip()
-  print("🥳🥳🥳")
-  print(f"[+] Here's level2's flag: {flag}")
-
-
-def level3():
-  p = getPrime(512)
-  f = Polynomial(p, 9)
-  flag = open("flag3.txt", "r").read().strip()
-  assert len(flag) == 44
-  secret = bytes_to_long(flag.encode())
-  f.set_coeff(0, secret)
-  xs = [random.randrange(1, p) for _ in range(10)]
-  shares = [f.evaluate(x) for x in xs]
-  print(f"[*] p: {p}")
-  print(f"[*] xs: {xs}")
-  for i, share in enumerate(shares, 1):
-    print(hex(share)[:-i] + "?" * i)
-
-
-def challenge():
-  print("🥰Welcome to my SSS backroom!")
-  while True:
-    try:
-      choice = int(input("📝Choose a level to escape > "))
-      if choice == 1:
-        level1()
-      elif choice == 2:
-        level2()
-      elif choice == 3:
-        level3()
-      else:
-        print("🚫Invalid choice.")
-        exit(0)
-    except Exception as e:
-      print(f"😵Error: {e}")
-
-
-if __name__ == "__main__":
-  challenge()
-```
-</TabItem>
-</Tabs>
-
-包含3个关卡的题目，都是给出多项式的根然后要求恢复一些系数，类似Shamir Secret Sharing，所以叫`SSS???`
-
-<Spoiler>因为分别窃取自三场国际赛所以不会详细解释解法，请直接参考各自的原题。</Spoiler>
-
-- level1抄自[HKCERT CTF 2023-Solitude, Solitude, Solitude](https://mystiz.hk/posts/2024/2024-01-27-hkcert-ctf-1/#solitude-solitude-solitude)
-- level2抄自[idekCTF 2025-FITM](https://normalsubgroup.cauchy.top/blog/idek2025-writeup/#fang-fa-2)的一部分，可以利用IDFT恢复指定位置的系数。
-- level3抄自[AlpacaHack round 12-Flag Sharing](https://yu212.hatenablog.com/entry/2025/07/06/180654#Flag-Sharing-6-solves)，不过那题当时我是直接用lll_cvp按照范德蒙德行列式的形式造格打CVP解的，有点非预期；这次出题优化了flag的字符分布，封堵了这一非预期解法。
-
-前两问基本上GPT-5能一把梭，第三问的格确实卡得很紧，按@yu212的做法用拉格朗日插值的公式造格规约+优化就好了。
+打算以后复用类似的想法所以就不放出题目代码了，私密马赛喵🙌🏻
 
 ### Lost Linear Logic
 
@@ -371,7 +263,8 @@ print(list(res.transpose()[0]))
 </TabItem>
 </Tabs>
 
-原版HSSP，直接打正交格就行。
+抄袭的[zer0pts CTF 2022-Karen](https://blog.maple3142.net/2022/03/20/zer0pts-ctf-2022-writeups/#karen)，只改了改矩阵转置和随机矩阵的大小。
+完全是原版HSSP，直接打正交格就行。
 
 具体来说，我们知道$A*x\equiv{0}\pmod{p}$，所以如果我们找到$M$满足$MA\vec{x}=\vec{x}^TA^TM^T\equiv{0}\pmod{p}$，那么$A$就在$M$的左核空间中；
 而A的向量又都很短，所以对$M$的左核空间作格规约就可以期望找到这些短向量，从而恢复出flag。
@@ -723,8 +616,10 @@ if __name__ == "__main__":
 </Tabs>
 ![c97b13e365d02959d782346e99ebb85c.png](https://pic.swizzer.cc/2025/10/c97b13e365d02959d782346e99ebb85c.png)
 
-这题的思想来自[smileyCTF 2025-Project Holoswap](https://blog.swizzer.cc/blog/2025-smileyctf-writeup/#project-holoswap)，在l2 norm上执行PGD Attack。
-为了避免出现去年Lilac 405杯那种"手动修改几个像素就能通过模型验证"的情况，这次基于EfficientNetV2架构训练了一个稍大点的模型(这也导致这题因为太吃资源而无法部署到平台，不得不在@Cherrling和我的机子上各部署了一份以减轻后端压力)，
+这题的思想来自[smileyCTF 2025-Project Holoswap](https://blog.swizzer.cc/blog/2025-smileyctf-writeup/#project-holoswap)，也就是在l2 norm上执行PGD Attack。
+不过比起`Project Holoswap`需要让模型误分类到指定类别，本题只需要让模型判定为非目标类别即可，所以难度会稍微低一点。<Spoiler>在PGD Attack面前似乎也没低多少</Spoiler>
+
+为了避免出现去年Lilac 405杯那种“手动修改几个像素就能通过模型验证”的情况，这次基于EfficientNetV2架构训练了一个稍大点的模型(这也导致这题因为太吃资源而无法部署到平台，不得不在@Cherrling和我的机子上各部署了一份以减轻后端压力)，
 并且把l2 norm的阈值调得比较严格。不过只要肯稍微调调步长+写个早停策略，还是能比较容易地打通的。
 
 <Tabs>
