@@ -4,7 +4,7 @@ publishDate: 2025-10-15
 description: '我们意念合一！🥷🤝🥷🤝🥷'
 heroImage: {src: 'https://pic.swizzer.cc/2025/10/8351e57df6517808e502d19ee0ad69c2.jpg', inferSize: true}
 tags: ['CTF', 'Crypto', '流密码', 'Lattice', 'Misc', 'AI', 'PGD', '侧信道']
-draft: true 
+draft: false 
 ---
 
 import {Spoiler, Collapse, Tabs, TabItem } from 'astro-pure/user'
@@ -75,10 +75,13 @@ if __name__ == "__main__":
 </Tabs>
 ![836e197497a9e1c0bed7155bb427043b.png](https://pic.swizzer.cc/2025/10/836e197497a9e1c0bed7155bb427043b.png)
 题目首先在扩域上生成一条j不变量为flag的曲线，然后把这个曲线的**一个5-isogeny的邻居的j不变量的实部和虚部的和**作为plaintext，最后生成一组指数，在 $Zmod(p^3)$上对plaintext做 形如$g^{{pt}^{e}}$的加密。
+
 这里多项式商环上的DLP在计算时可以通过对多项式取companion matrix再取行列式转化到环$Zmod(p^3)$上的DLP，也可以直接取范数转化为环$Zmod(p^3)$上的DLP。
 虽然解决$Zmod(p^3)$上的DLP并不容易，但是经过p-adic处理后只需求模逆即可得到$Zmod(p^2)$上的DLP，所以我们可以拿到一组$pt^{e} \pmod{p^2}$。因为这组e的最大公因子是2,所以由bezout定理可以知道存在一组系数$a_{i}$使得 $\sum{a_i}{e_i}=2$。可以用LLL或者exgcd找到这样的一组系数，之后就能得到 $pt^2 \pmod{p^2}$
 接下来使用hensel lifting或是其他手段求解出$pt$，即可得到**j不变量的实部和虚部的和。**
+
 注意到题目中的起始曲线经过一次5-isogeny后得到的曲线的j不变量极大概率还是实数，所以我们可以猜测我们得到的和就是j不变量的实部，而虚部则为0。这一点也可以通过本地测试验证。
+
 两条曲线的同源可以由modular polynomial联系起来，也就是说，如果知道了一个j不变量，那么可以将其代入对应度的modular polynomial去求根，得到的所有根就是所有作为他的邻居的j不变量。本题中是5-isogeny，可以去 https://math.mit.edu/~drew/modpolys/jfiles/phi_j_5.txt 找到对应的modular polynomial，随后对该多项式求根即可得到起始曲线的j不变量，也就是flag。
 
 <Tabs>
