@@ -8,7 +8,10 @@ type AnimationController = ReturnType<typeof animate>
 
 let clockAnimation: AnimationController | null = null
 let pointerClockAnimatable: ReturnType<typeof createAnimatable> | null = null
+let clockScaleAnimatable: ReturnType<typeof createAnimatable> | null = null
+let pointerClockScaleAnimatable: ReturnType<typeof createAnimatable> | null = null
 let mouseMoveListenerAttached = false
+let hoverListenersAttached = false
 let visibilityListenerAttached = false
 let reduceMotionQuery: MediaQueryList | null = null
 let reduceMotionListenerAttached = false
@@ -56,6 +59,30 @@ const createPointerClock = (clockElement: HTMLElement) => {
   return pointerClockAnimatable
 }
 
+const createClockScaleAnimatable = (clockElement: HTMLElement) => {
+  if (clockScaleAnimatable) {
+    return clockScaleAnimatable
+  }
+
+  clockScaleAnimatable = createAnimatable(clockElement, {
+    scale: 300
+  })
+
+  return clockScaleAnimatable
+}
+
+const createPointerClockScaleAnimatable = (clockElement: HTMLElement) => {
+  if (pointerClockScaleAnimatable) {
+    return pointerClockScaleAnimatable
+  }
+
+  pointerClockScaleAnimatable = createAnimatable(clockElement, {
+    scale: 300
+  })
+
+  return pointerClockScaleAnimatable
+}
+
 const rotateClock = (animatable: ReturnType<typeof createAnimatable>) => {
   const PI = Math.PI
   let angle = PI / 2
@@ -83,6 +110,26 @@ const ensureMouseMoveListener = (animatable: ReturnType<typeof createAnimatable>
   const rotateClockHandler = rotateClock(animatable)
   window.addEventListener('mousemove', rotateClockHandler)
   mouseMoveListenerAttached = true
+}
+
+const ensureHoverListeners = (
+  clockAnimatable: ReturnType<typeof createAnimatable>,
+  pointerClockAnimatable: ReturnType<typeof createAnimatable>,
+  clockSection: HTMLElement
+) => {
+  if (hoverListenersAttached) return
+
+  clockSection.addEventListener('mouseenter', () => {
+    clockAnimatable.scale(1.1, 300, 'outQuad')
+    pointerClockAnimatable.scale(1.1, 300, 'outQuad')
+  })
+
+  clockSection.addEventListener('mouseleave', () => {
+    clockAnimatable.scale(1, 300, 'outQuad')
+    pointerClockAnimatable.scale(1, 300, 'outQuad')
+  })
+
+  hoverListenersAttached = true
 }
 
 const ensureVisibilityListener = () => {
@@ -145,7 +192,12 @@ const initializeAnimations = () => {
   const pointerClock = createPointerClock(pointerClockElement)
   ensureMouseMoveListener(pointerClock)
 
+  // Create scale animatables for hover effect
   if (clockSection) {
+    const clockScale = createClockScaleAnimatable(clockElement)
+    const pointerClockScale = createPointerClockScaleAnimatable(pointerClockElement)
+    ensureHoverListeners(clockScale, pointerClockScale, clockSection)
+
     clockSection.addEventListener('click', () => {
       window.location.href = '/blog'
     })
