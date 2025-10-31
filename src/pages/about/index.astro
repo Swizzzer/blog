@@ -1,8 +1,8 @@
 ---
+import { GithubCard } from 'astro-pure/advanced'
 import { Aside, Timeline } from 'astro-pure/user'
 import PageLayout from '@/layouts/CommonPage.astro'
 import Substats from '@/components/about/Substats.astro'
-import { GithubCard } from 'astro-pure/advanced'
 
 const headings = [
   { depth: 2, slug: 'social-networks', text: 'Social Networks' },
@@ -14,22 +14,20 @@ const headings = [
 
 <PageLayout title='About' {headings} comment>
   <p>
-    👋 I'm Swizzer, an active CTF player with <a href="https://del0n1x.com/">Del0n1x</a> and <a href="https://normalsubgroup.cauchy.top/">正规子群</a>.
+    👋 I'm Swizzer, an active CTF player with <a href='https://del0n1x.com/'>Del0n1x</a> and <a
+      href='https://normalsubgroup.cauchy.top/'>正规子群</a
+    >.
   </p>
   <p>
-    My academic and extracurricular interests include algebra, combinatorics, and cryptography, with a strong passion for problem solving in competitive security challenges.
+    My academic and extracurricular interests include algebra, combinatorics, and cryptography, with
+    a strong passion for problem solving in competitive security challenges.
   </p>
-  <p>
-    I also create challenges for some CTF events, you can find them here👇
-  </p>
+  <p>I also create challenges for some CTF events, you can find them here👇</p>
   <GithubCard repo='Swizzzer/my-CTF-Challenges' />
-
 
   {/* social-networks */}
   <h2 id='social-networks'>Social Networks</h2>
-  <p>
-    You can find me on the following platforms:
-  </p>
+  <p>You can find me on the following platforms:</p>
   <Substats
     stats={[
       {
@@ -61,10 +59,13 @@ const headings = [
         link: 'https://x.com/obfusor',
         text: 'followers',
         api: 'twitter/obfusor'
-      },
+      }
     ]}
   />
-  <p>Also, feel free to <a href="mailto:kyoshaft@outlook.com">📧 email me</a> if you have any questions or just want to chat!</p>
+  <p>
+    Also, feel free to <a href='mailto:kyoshaft@outlook.com'>📧 email me</a> if you have any questions
+    or just want to chat!
+  </p>
 
   {/* awards */}
   <h2 id='awards'>Awards</h2>
@@ -72,13 +73,15 @@ const headings = [
     events={[
       {
         date: '2024-06',
-        content:
-          'CISCN 华南分区决赛 二等奖'
+        content: 'CISCN 华南分区决赛 二等奖'
+      },
+      {
+        date: '2024-07',
+        content: '2024 中国工业互联网安全大赛 决赛 rank 13/30'
       },
       {
         date: '2024-09',
-        content:
-          '羊城杯 决赛 rank 12/20'
+        content: '羊城杯 决赛 rank 12/20'
       },
       {
         date: '2025-04',
@@ -99,10 +102,12 @@ const headings = [
     ]}
   />
   <h2 id='GPG Key'>My GPG Key</h2>
-  <Aside type='tip' title='For Security'>You can download my <a href='https://github.com/swizzzer.gpg'>GPG key</a> to verify my signed messages.</Aside>
+  <Aside type='tip' title='For Security'
+    >You can download my <a href='https://github.com/swizzzer.gpg'>GPG key</a> to verify my signed messages.</Aside
+  >
 
   <h2 id='Coding time'>Coding time</h2>
-  <object type="image/svg+xml" data="https://wakatime.com/share/@Wercilim/61de281d-5d25-4ca6-bb11-7b8a1f08c48f.svg"></object>
-
-
+  <object
+    type='image/svg+xml'
+    data='https://wakatime.com/share/@Wercilim/61de281d-5d25-4ca6-bb11-7b8a1f08c48f.svg'></object>
 </PageLayout>
