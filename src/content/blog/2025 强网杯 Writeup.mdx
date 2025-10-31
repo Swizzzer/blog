@@ -1,0 +1,485 @@
+---
+title: 2025 强网杯 Writeup
+publishDate: 2025-10-31
+description: 'Everything I found great was sunfaded.'
+tags: ["CTF", "Crypto", "Lattice", "MT19937"]
+draft: false 
+lang: ''
+---
+import { Spoiler, Collapse, Tabs, TabItem, Aside } from 'astro-pure/user'
+
+虽然过去很久了但还是写写吧。大概不会讲很多思路，毕竟只是为了忘却的纪念。
+
+## Crypto
+### check-little
+<Tabs>
+<TabItem label="chall.py">
+```python
+from Crypto.Util.number import *
+from Crypto.Util.Padding import pad
+from Crypto.Cipher import AES
+import os
+
+flag, key = open("secret").read().split("\n")
+
+e = 3
+
+while 1:
+  p = getPrime(1024)
+  q = getPrime(1024)
+  phi = (p - 1) * (q - 1)
+  if phi % e != 0:
+    break
+N = p * q
+c = pow(key, e, N)
+
+iv = os.urandom(16)
+ciphertext = (
+  AES.new(key=long_to_bytes(key)[:16], iv=iv, mode=AES.MODE_CBC)
+  .encrypt(pad(flag.encode(), 16))
+  .hex()
+)
+
+f = open("output.txt", "w")
+f.write(f"N = {N}\n")
+f.write(f"c = {c}\n")
+f.write(f"iv = {iv}\n")
+f.write(f"ciphertext = {ciphertext}\n")
+```
+</TabItem>
+</Tabs>
+
+乍一看会觉得根本不可解，头天下午在这题上坐牢了足足有两个小时。
+后来实在走投无路了给GPT充了点💰，把Agent接入GPT5-high之后被一眼看出来说给出的数据里的n和c有公因数。。。
+
+> 都这样了那我还说啥呢
+
+exp是AI搓的：
+
+</Tabs>
+<TabItem label="solve.py">
+```python
+#!/usr/bin/env python3
+import re
+import ast
+import sys
+import math
+import subprocess
+
+try:
+    from Crypto.Util.number import long_to_bytes as _ltb
+except Exception:
+    _ltb = None
+
+def long_to_bytes(n: int) -> bytes:
+    if _ltb is not None:
+        return _ltb(n)
+    if n == 0:
+        return b"\x00"
+    out = bytearray()
+    while n:
+        out.append(n & 0xff)
+        n >>= 8
+    return bytes(reversed(out))
+
+def egcd(a: int, b: int):
+    if b == 0:
+        return (1, 0, a)
+    x, y, g = egcd(b, a % b)
+    return (y, x - (a // b) * y, g)
+
+def invmod(a: int, m: int) -> int:
+    x, y, g = egcd(a, m)
+    if g != 1:
+        raise ValueError("no inverse")
+    return x % m
+
+def pkcs7_unpad(data: bytes, block_size: int = 16) -> bytes:
+    if not data:
+        return data
+    padlen = data[-1]
+    if padlen < 1 or padlen > block_size:
+        return data
+    if data[-padlen:] != bytes([padlen]) * padlen:
+        return data
+    return data[:-padlen]
+
+def parse_output(path: str):
+    s = open(path, 'r').read()
+    N = int(re.search(r"N\s*=\s*(\d+)", s).group(1))
+    c = int(re.search(r"c\s*=\s*(\d+)", s).group(1))
+    iv_repr = re.search(r"iv\s*=\s*(.*)", s).group(1)
+    ct_hex = re.search(r"ciphertext\s*=\s*([0-9a-fA-F]+)", s).group(1)
+    iv = ast.literal_eval(iv_repr)
+    ct = bytes.fromhex(ct_hex)
+    return N, c, iv, ct
+
+def decrypt_aes_cbc(ct: bytes, key16: bytes, iv: bytes) -> bytes:
+    try:
+        from Crypto.Cipher import AES
+        cipher = AES.new(key=key16, iv=iv, mode=AES.MODE_CBC)
+        pt = cipher.decrypt(ct)
+        return pkcs7_unpad(pt, 16)
+    except Exception:
+        # Fallback to openssl if pycryptodome not available
+        proc = subprocess.run(
+            ["openssl", "enc", "-aes-128-cbc", "-d", "-K", key16.hex(), "-iv", iv.hex(), "-nosalt"],
+            input=ct,
+            capture_output=True,
+        )
+        if proc.returncode != 0:
+            raise RuntimeError(f"openssl decrypt failed: {proc.stderr.decode(errors='ignore')}")
+        return pkcs7_unpad(proc.stdout, 16)
+
+def main():
+    inpath = sys.argv[1] if len(sys.argv) > 1 else 'output.txt'
+    N, c, iv, ct = parse_output(inpath)
+
+    p = math.gcd(N, c)
+    if p == 1 or p == N:
+        print("[-] gcd(N, c) is trivial; instance likely not vulnerable.")
+        sys.exit(1)
+    q = N // p
+    phi = (p - 1) * (q - 1)
+    e = 3
+    d = invmod(e, phi)
+
+    key_int = pow(c, d, N)
+    kb = long_to_bytes(key_int)
+    # Derive AES-128 key: top 16 bytes (big-endian); ensure length 16
+    if len(kb) < 16:
+        kb = (b"\x00" * (16 - len(kb))) + kb
+    aes_key = kb[:16]
+
+    pt = decrypt_aes_cbc(ct, aes_key, iv)
+    try:
+        s = pt.decode()
+    except Exception:
+        s = pt.decode(errors='replace')
+
+    print(s)
+
+if __name__ == '__main__':
+    main()
+```
+</TabItem>
+</Tabs>
+
+### ezran
+<Tabs>
+<TabItem label="chall.py">
+```python
+from Crypto.Util.number import *
+from random import *
+
+f = open("flag.txt", "r")
+flag = f.read().encode()
+
+gift = b""
+for i in range(3108):
+  r1 = getrandbits(8)
+  r2 = getrandbits(16)
+  x = (pow(r1, 2 * i, 257) & 0xFF) ^ r2
+  c = long_to_bytes(x, 2)
+  gift += c
+
+m = list(flag)
+for i in range(2025):
+  shuffle(m)
+
+c = "".join(list(map(chr, m)))
+
+f = open("output.txt", "w")
+f.write(f"gift = {bytes_to_long(gift)}\n")
+f.write(f"c = {c}\n")
+```
+</TabItem>
+</Tabs>
+
+预测MT19937，gift里能拿到高8位确定的bits，`gf2bv`下去一把梭。这里因为矩阵不满秩所以有多解，不过`gf2bv`提供了`solve_all()`函数，遍历一下所有解就行。
+
+<Tabs>
+<TabItem label="solve.py">
+```python
+from gf2bv import LinearSystem
+from gf2bv.crypto.mt import MT19937
+from Crypto.Util.number import long_to_bytes
+import sys
+
+
+def get_r2_l_8(gift):
+  gift = long_to_bytes(gift, 2 * 3108)
+  return list(gift[::2])
+
+
+def mt19937(bs, out):
+  lin = LinearSystem([32] * 624)
+  mt = lin.gens()
+  rng = MT19937(mt)
+  zeros = []
+  for o in out:
+    rng.getrandbits(8)
+    zeros.append(rng.getrandbits(bs) ^ int(o))
+  zeros.append(mt[0] ^ int(0x80000000))
+  res = lin.solve_all(zeros)
+  pyrands = []
+  for sol in res:
+    rng = MT19937(sol)
+    pyrand = rng.to_python_random()
+    pyrands.append(pyrand)
+  return pyrands
+
+
+sys.set_int_max_str_digits(0)
+gift_str = "..."
+gift = int(gift_str)
+c = ")9Lsu_4s_eb__otEli_nhe_tes5gii5sT@omamkn__ari{efm0__rmu_nt(0Eu3_En_og5rfoh}nkeoToy_bthguuEh7___u"
+extracted = get_r2_l_8(gift)
+RNGs = mt19937(8, extracted)
+for RNG in RNGs:
+  for i in range(3108):
+    r1 = RNG.getrandbits(8)
+    r2 = RNG.getrandbits(16)
+  shuffled = [i for i in range(len(c))]
+  for i in range(2025):
+    RNG.shuffle(shuffled)
+  unshuffled = "".join([c[shuffled.index(i)] for i in range(len(c))])
+  if unshuffled.startswith("flag{"):
+    print("[+] FLAG: " + unshuffled)
+    exit(0)
+print("[-] Try harder, Swizzer!")
+```
+</TabItem>
+</Tabs>
+
+### sk
+<Tabs>
+<TabItem label="chall.py">
+```python
+from random import randint
+from Crypto.Util.number import getPrime, inverse, long_to_bytes, bytes_to_long
+from math import gcd
+import signal
+from secret import flag
+
+
+def gen_coprime_num(pbits):
+  lbits = 2 * pbits + 8
+  lb = 2**lbits
+  ub = 2 ** (lbits + 1)
+  while True:
+    r = randint(lb, ub)
+    s = randint(lb, ub)
+    if gcd(r, s) == 1:
+      return r, s
+
+
+def mult_mod(A, B, p):
+  result = [0] * (len(A) + len(B) - 1)
+  for i in range(len(A)):
+    for j in range(len(B)):
+      result[i + j] = (result[i + j] + A[i] * B[j]) % p
+
+  return result
+
+
+def gen_key(p):
+  f = [randint(1, 2**128) for i in ":)"]
+  h = [randint(1, 2**128) for i in ":("]
+
+  R1, S1 = gen_coprime_num(p.bit_length())
+  R2, S2 = gen_coprime_num(p.bit_length())
+
+  B = [[randint(1, p - 1) for i in ":("] for j in ":)"]
+
+  P = []
+  for b in B:
+    P.append(mult_mod(f, b, p))
+
+  Q = []
+  for b in B:
+    Q.append(mult_mod(h, b, p))
+
+  for i in range(len(P)):
+    for j in range(len(P[i])):
+      P[i][j] = P[i][j] * R1 % S1
+      Q[i][j] = Q[i][j] * R2 % S2
+
+  sk = [(R1, S1), (R2, S2), f, h, p]
+  pk = [P, Q, p]
+
+  return sk, pk
+
+
+def encrypt(pk, pt):
+  P, Q, p = pk
+  pt = bytes_to_long(pt)
+
+  PP = 0
+  QQ = 0
+
+  for i in range(len(P)):
+    u = randint(1, p)
+    for j in range(len(P[0])):
+      PP = PP + P[i][j] * (u * pt**j % p)
+      QQ = QQ + Q[i][j] * (u * pt**j % p)
+
+  return PP, QQ
+
+
+def decrypt(sk, ct):
+  RS1, RS2, f, h, p = sk
+  R1, S1 = RS1
+  R2, S2 = RS2
+
+  P, Q = ct
+  invR1 = inverse(R1, S1)
+  invR2 = inverse(R2, S2)
+  P = (P * invR1 % S1) % p
+  Q = (Q * invR2 % S2) % p
+
+  f0q = f[0] * Q % p
+  f1q = f[1] * Q % p
+  h0p = h[0] * P % p
+  h1p = h[1] * P % p
+
+  a = f1q + p - h1p % p
+  b = f0q + p - h0p % p
+
+  pt = -b * inverse(a, p) % p
+  pt = long_to_bytes(pt)
+
+  return pt
+
+
+if __name__ == "__main__":
+  # signal.alarm(30)
+  p = getPrime(256)
+  sk, pk = gen_key(p)
+  ticket = long_to_bytes(randint(1, p))
+  enc_ticket = encrypt(pk, ticket)
+  print(pk)
+  print(enc_ticket)
+
+  for i in range(2):
+    op = int(input("op>").strip())
+    if op == 1:
+      msg = input("pt:").strip().encode()
+      ct = encrypt(pk, msg)
+      print(f"ct: {ct}")
+    elif op == 2:
+      user_input = input("ct:").strip().split(" ")
+      if len(user_input) == 2:
+        ct = [int(user_input[0]), int(user_input[1])]
+      else:
+        print("invalid ct.")
+        break
+
+      user_input = input("your f:").strip().split(" ")
+      if len(user_input) == 2:
+        user_f = [int(user_input[0]), int(user_input[1])]
+      else:
+        print("invalid f.")
+        break
+
+      user_input = input("your h:").strip().split(" ")
+      if len(user_input) == 2:
+        user_h = [int(user_input[0]), int(user_input[1])]
+      else:
+        print("invalid h.")
+        break
+
+      user_input = input("your R1 S1:").strip().split(" ")
+      if len(user_input) == 2:
+        user_r1s1 = [int(user_input[0]), int(user_input[1])]
+      else:
+        print("invalid R1 S1.")
+        break
+
+      user_input = input("your R2 S2:").strip().split(" ")
+      if len(user_input) == 2:
+        user_r2s2 = [int(user_input[0]), int(user_input[1])]
+      else:
+        print("invalid R2 S2.")
+        break
+
+      pt = decrypt((user_r1s1, user_r2s2, user_f, user_h, p), ct)
+      if pt == ticket:
+        print(flag)
+      else:
+        print(pt.hex())
+    else:
+      print("invalid op.")
+      break
+
+  print("bye!")
+```
+</TabItem>
+</Tabs>
+
+代码很长，赛中花了半个小时才摸清加解密原理。不过无所谓，搞明白那一堆矩阵的乘法等价于多项式乘法后就能知道问题点在于
+
+```python
+for i in range(len(P)):
+  u = randint(1, p)
+  for j in range(len(P[0])):
+    PP = PP + P[i][j] * (u * pt**j % p)
+    QQ = QQ + Q[i][j] * (u * pt**j % p)
+```
+
+这里。看成关于pk的多项式，系数就是`u * pt**j`，直接拿格尝试恢复系数就行。如果恢复的是对的那么就满足中间一项的平方等于前后两项的乘积（模p意义下），多试几次就行。
+
+<Tabs>
+<TabItem label="solve.py">
+```python
+from sage.all import *
+from pwn import *
+import ast
+from Crypto.Util.number import *
+
+context.log_level = "debug"
+# io = process(["python", "task.py"])
+io = remote("47.104.146.31", 7777)
+io.sendlineafter(b"team token", "icqdcb06d24a319777d37efc49e94842".encode())
+P, Q, p = ast.literal_eval(io.recvline().decode().lstrip(":"))
+pp, qq = ast.literal_eval(io.recvline().decode())
+v_p = vector(ZZ, (P[0] + P[1] + [-pp] + [0]))
+v_q = vector(ZZ, (Q[0] + Q[1] + [0] + [-qq]))
+M = identity_matrix(ZZ, len(v_p))
+M = M.augment(matrix(ZZ, [v_p, v_q]).transpose())
+M[:, -2:] *= 2**384
+L = M.LLL()
+res = None
+for row in L:
+  if row[-2] == 0 and row[-1] == 0 and row[-3] == 1 and row[-4] == 1:
+    print("[+] Found!")
+    res = row
+    break
+assert res is not None
+w00, w01, w02, w10, w11, w12 = res[:6]
+
+m = (w01 * inverse(w00, p)) % p
+print(m)
+io.recvuntil(b"op>")
+io.sendline(b"2")
+io.sendline(f"1 {m}".encode())
+io.sendline(b"1 0")
+io.sendline(b"0 1")
+io.sendline(f"1 {p}".encode())
+io.sendline(f"1 {p}".encode())
+io.interactive()
+```
+</TabItem>
+</Tabs>
+
+### *Blurred
+
+赛中走偏了，试了试时序侧信道能拿到几乎正确的bits（大约有20-40位错误），后面全在想怎么纠错了，赛后经别的师傅提示发现拿格打后看范数就能区分。。。
+
+<Spoiler>懒得复现了</Spoiler>
+
+<Aside type='note'>
+  Things made me who I became today without knowing who made them,
+  tapes, records, books,
+  everything I found great was sunfaded.
+</Aside>
