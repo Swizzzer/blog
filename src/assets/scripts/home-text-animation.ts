@@ -231,6 +231,11 @@ const animate = () => {
       timeline.play()
     }
   }
+
+  // Add click event to navigate to /about
+  target.addEventListener('click', () => {
+    window.location.href = '/about'
+  })
 }
 
 const attachAnimation = () => {
