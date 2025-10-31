@@ -59,7 +59,7 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
         }
       </style>
 
-      <div class='animate flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12 py-10'>
+      <div id='clock-section' class='animate flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-12 py-10 cursor-pointer transition-opacity hover:opacity-80'>
         <div class='clock-container'>
           <svg
             id='animated-clock'

@@ -130,6 +130,7 @@ const ensureReduceMotionListener = () => {
 const initializeAnimations = () => {
   const clockElement = document.querySelector<HTMLElement>(CLOCK_SELECTOR)
   const pointerClockElement = document.querySelector<HTMLElement>(POINTER_CLOCK_SELECTOR)
+  const clockSection = document.querySelector<HTMLElement>('#clock-section')
 
   if (!clockElement || !pointerClockElement) return
 
@@ -143,6 +144,12 @@ const initializeAnimations = () => {
 
   const pointerClock = createPointerClock(pointerClockElement)
   ensureMouseMoveListener(pointerClock)
+
+  if (clockSection) {
+    clockSection.addEventListener('click', () => {
+      window.location.href = '/blog'
+    })
+  }
 }
 
 const attachAnimation = () => {
