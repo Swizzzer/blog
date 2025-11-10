@@ -44,7 +44,7 @@
           "name": "Keyboard",
           "intro": "🫡 My Captain",
           "link": "https://muzihit.github.io",
-          "avatar": "https://muzihit.github.io/img/head.jpg"
+          "avatar": "https://muzihit.github.io/static/img/head.jpg"
         },
         {
           "name": "cheng_xing",
@@ -75,6 +75,12 @@
           "intro": "Never forget, there will be echoes",
           "link": "https://shinichicun.top/",
           "avatar": "https://shinichicun.top/avatar.png"
+        },
+        {
+          "name": "cvestone",
+          "intro": "pwn2life,ret2self",
+          "link": "https://cvestone.github.io",
+          "avatar": "https://raw.githubusercontent.com/cvestone/stonepic/main/cvestone.jpg"
         }
       ]
     }
