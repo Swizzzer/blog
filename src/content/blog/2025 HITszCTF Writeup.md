@@ -40,7 +40,7 @@ kirikiri引擎写的一个只有两个场景的小玩意儿(两个场景，指`f
 
 > It's a feature
 
-附件给了完整的VS工程，里面写的Payload会在打开工程时唤起powershell然后向`%USERS%\Pulic`下写入flag。预期解之一是检索到类似的手法后去`.suo`文件里base64解码，就能获得flag；之二则是在看到powershell弹窗后意识到这一点，用行为监控工具去追powershell干了啥。
+附件给了完整的VS工程，里面写的Payload会在打开工程时唤起powershell然后向`%USERS%\Public`下写入flag。预期解之一是检索到类似的手法后去`.suo`文件里base64解码，就能获得flag；之二则是在看到powershell弹窗后意识到这一点，用行为监控工具去追powershell干了啥。
 
 这题的难点在于`.suo`文件打开工程之后就会被覆写，如果选手没能意识到这一点，就只有一次机会做出本题。
 
