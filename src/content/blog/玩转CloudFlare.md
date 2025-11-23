@@ -2,8 +2,7 @@
 title: 玩转CloudFlare
 publishDate: 2025-06-19
 description: 'CloudFlare is all you need.'
-tags: ["Web"]
-category: '技术'
+tags: ["Web", "技术"]
 draft: false 
 ---
 

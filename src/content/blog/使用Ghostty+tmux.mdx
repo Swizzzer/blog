@@ -1,0 +1,237 @@
+---
+title: 使用Ghostty+tmux
+publishDate: 2025-11-23
+description: '所以我放弃了Wezterm'
+heroImage: {src: 'https://pic.swizzer.cc/2025/11/28515b4ca64272f3f81024f4870b1659.png', inferSize: true}
+tags: ["技术"]
+draft: false 
+lang: ''
+---
+
+import { Spoiler } from 'astro-pure/user';
+import { Tabs, TabItem, Collapse } from 'astro-pure/user';
+
+
+Wezterm其实没什么不好，毕竟是~~原神语言~~Rust写的、也带GPU加速，本身也能作为muxer使用——但是在昨天晚上使用kitty提供的benchmark测试之后，我发现Wezterm的性能实在是不敢恭维🤬
+
+> 执行`kitten __benchmark__`，然后发现Wezterm渲染ASCII字符的速度居然不到50MB/s...我用的可是M4 Pro啊kora
+
+测下来发现Ghostty的文字渲染速度是Wezterm的2~3倍，虽然图片渲染速度有点拉——但我又不用终端看图，所以影响也不是很大。
+另一方面，Ghostty在macOS上似乎是原生Metal，而Wezterm据我所知需要走WebGPU提供的Metal后端，虽然兼容性更佳但相比之下我更偏爱Raw一点的实现。
+<Spoiler>Ghostty用的语言也是比起Rust更Raw的Zig，这下更合我意了</Spoiler>
+
+## 尴尬之处
+我曾经是务实tmux反对者，反对原因除了tmux那反人类的快捷键设计之外，还有一部分是源于现代终端大多都支持分屏/分tab，日用基本是够了，tmux并非刚需。
+
+Ghostty同样支持智能分屏和分tab，但是在macOS Tahoe上默认的tab栏是土到掉渣的**Liquid Glass**！大部分情况下终端显示内容都是扁平化的，配合拟物化的tab栏，不统一的视觉语汇实在让人难以接受🤢
+
+> 怎么办？只有杀
+
+但是hide掉默认的tab栏之后，Ghostty就不支持分tab了👇
+
+<Collapse title="官方文档">
+`window-decoration`
+
+Configure a preference for window decorations. This setting specifies a preference; the actual OS, desktop environment, window manager, etc. may override this preference. Ghostty will do its best to respect this preference but it may not always be possible.
+
+Valid values:
+
+    `none`
+
+    All window decorations will be disabled. Titlebar, borders, etc. will not be shown. On macOS, this will also disable tabs (enforced by the system).
+</Collapse>
+
+怎么办呢？那就用tmux吧🤷🏻‍♂️
+
+## 改键！
+为了让tmux的快捷键不那么反人类，可以考虑用Ghostty的快捷键取代掉tmux的快捷键。说人话就是，改掉Ghostty默认的快捷键，让它们给tmux发送tmux兼容的命令。
+比方说，macOS上Ghostty默认用`Cmd+t`新建tab，而tmux新建tab的命令是`Ctrl+b c`，那么我们就把Ghostty的`Cmd+t`改成发送`Ctrl+b c`。这样tmux接收到Ghostty发送的命令之后，就会新建一个tmux的tab。
+`Ctrl+b`其实是发送了`b"\x02"`，所以Ghostty里这么改就好了：
+
+```txt
+keybind = cmd+t=text:\x02c
+```
+
+比葫芦画瓢改掉其他快捷键，最终得到的Ghostty config大概长这样：
+<Collapse title="Ghostty config">
+```txt
+# ghostty +show-config --default --docs
+# ghostty +list-themes
+custom-shader = ~/.config/ghostty/shaders/pjsk.glsl
+command = ~/.config/ghostty/tmux.sh
+macos-titlebar-style = hidden
+window-height = 50
+window-width = 150
+cursor-style = block
+font-family                    = ComicShannsMono Nerd Font
+font-family                    = LXGW WenKai Mono
+font-family-italic             = Victor Mono
+font-family-bold-italic        = Victor Mono
+font-size                      = 16
+window-inherit-font-size       = true
+
+# Look and Feel
+adjust-cursor-thickness        = 3
+adjust-underline-position      = 3
+bold-is-bright                 = true
+cursor-invert-fg-bg            = true
+cursor-opacity                 = 0.8
+link-url                       = true
+mouse-hide-while-typing        = true
+theme                          = tokyonight_night
+window-vsync                   = true
+
+# Other
+clipboard-trim-trailing-spaces = true
+copy-on-select                 = clipboard
+macos-auto-secure-input        = true
+macos-secure-input-indication  = true
+quit-after-last-window-closed  = true
+scrollback-limit               = 4200
+shell-integration              = zsh
+shell-integration-features     = no-cursor,sudo,title
+background-opacity             = 0.9
+background-blur                = true
+# Keybindings
+# keybind = cmd+enter=new_split:auto
+keybind = cmd+enter=text:\x02\x0d
+keybind = opt+w=close_window
+keybind = cmd+t=text:\x02c
+
+# Cmd+W -> 关闭当前 Tmux 面板 (发送 Prefix + x + y确认)
+keybind = cmd+w=text:\x02x
+
+# Cmd+[1-9] -> 切换 Tmux 窗口 1-9
+# Cmd+h/j/k/l -> 切换分屏
+# Cmd+[ -> 进入vim模式
+keybind = cmd+digit_1=text:\x021
+keybind = cmd+digit_2=text:\x022
+keybind = cmd+digit_3=text:\x023
+keybind = cmd+digit_4=text:\x024
+keybind = cmd+digit_5=text:\x025
+keybind = cmd+digit_6=text:\x026
+keybind = cmd+digit_7=text:\x027
+keybind = cmd+digit_8=text:\x028
+keybind = cmd+digit_9=text:\x029
+keybind = cmd+digit_0=text:\x020
+keybind = cmd+bracket_left=text:\x02[
+keybind = cmd+h=text:\x02\x1b[D
+keybind = cmd+j=text:\x02\x1b[B
+keybind = cmd+k=text:\x02\x1b[A
+keybind = cmd+l=text:\x02\x1b[C
+```
+</Collapse>
+
+而我用的tmux config长这样：
+<Collapse title="tmux config">
+```txt
+# set -g default-terminal "xterm-256color"
+# set -ga terminal-overrides ",_256col_:Tc"
+# set -ga terminal-overrides ",xterm-256color:Tc"
+
+# action key
+
+set-option -g repeat-time 0
+set -g base-index 1
+setw -g pane-base-index 1
+
+#### Key bindings
+
+set-window-option -g mode-keys vi
+
+# bind t send-key C-t
+
+# Reload settings
+
+bind r source-file ~/.tmux.conf \; display "Reloaded!"
+
+# Open current directory
+
+bind o run-shell "open #{pane_current_path}"
+bind -r e kill-pane -a
+
+# vim-like pane switching
+
+bind -r k select-pane -U
+bind -r j select-pane -D
+bind -r h select-pane -L
+bind -r l select-pane -R
+bind -T copy-mode-vi v send-keys -X begin-selection
+bind -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+# Moving window
+
+bind-key -n C-S-Left swap-window -t -1 \; previous-window
+bind-key -n C-S-Right swap-window -t +1 \; next-window
+
+# Resizing pane
+
+bind -r C-k resize-pane -U 5
+bind -r C-j resize-pane -D 5
+bind -r C-h resize-pane -L 5
+bind -r C-l resize-pane -R 5
+
+#### basic settings
+
+set-option -g status-justify "left"
+# set-option utf8-default on
+# set-option -g mouse-select-pane
+set -g mouse on
+set-window-option -g mode-keys vi
+# set-window-option -g utf8 on
+
+# look'n feel
+
+set-option -g status-fg cyan
+set-option -g status-bg black
+set -g pane-active-border-style fg=colour166,bg=default
+# set -g window-style fg=colour10,bg=default
+# set -g window-active-style fg=colour12,bg=default
+set-option -g history-limit 64096
+
+set -sg escape-time 10
+
+#### COLOUR
+
+# default statusbar colors
+
+set-option -g status-style bg=colour235,fg=colour136,default
+
+# default window title colors
+
+set-window-option -g window-status-style fg=colour244,bg=colour234,dim
+
+# active window title colors
+
+set-window-option -g window-status-current-style fg=colour166,bg=default,bright
+
+# pane border
+
+set-option -g pane-border-style fg=colour235 #base02
+set-option -g pane-active-border-style fg=colour136,bg=colour235
+
+# pane number display
+
+set-option -g display-panes-active-colour colour33 #blue
+set-option -g display-panes-colour colour166 #orange
+
+# clock
+
+set-window-option -g clock-mode-colour colour64 #green
+
+# allow the title bar to adapt to whatever host you connect to
+
+set -g set-titles on
+set -g set-titles-string "#T"
+bind Enter if-shell "[ #{pane_width} -gt $(( #{pane_height} * 22 / 10 )) ]" \
+    "split-window -h -c '#{pane_current_path}'" \
+    "split-window -v -c '#{pane_current_path}'"
+```
+</Collapse>
+
+## 美化
+
+Ghostty支持自定义shader，顺手[写了个](https://github.com/Swizzzer/my-ghostty-shader)
+
+![28515b4ca64272f3f81024f4870b1659.png](https://pic.swizzer.cc/2025/11/28515b4ca64272f3f81024f4870b1659.png)
+
+挺不错的。
